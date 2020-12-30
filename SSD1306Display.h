@@ -1,7 +1,7 @@
 #ifndef SSD1306_DISPLAY_H
 #define SSD1306_DISPLAY_H
 
-#if defined(ESP8266)
+// #if defined(ESP8266)
 
 #include <SSD1306.h>
 #include "font.h"
@@ -77,7 +77,7 @@ private:
 	PGM_P custom_chars[NUM_CUSTOM_ICONS];
 };
 
-#endif
+// #endif // ESP8266 only
 
 #endif // SSD1306_DISPLAY_H
 

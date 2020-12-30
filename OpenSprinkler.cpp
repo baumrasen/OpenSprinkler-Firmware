@@ -90,6 +90,7 @@ extern char ether_buffer[];
 		byte OpenSprinkler::pin_sr_data = PIN_SR_DATA;
 	#endif
 	// todo future: LCD define for Linux-based systems
+	SSD1306Display OpenSprinkler::lcd(0x3c, SDA, SCL);
 #endif
 
 /** Option json names (stored in PROGMEM to reduce RAM usage) */
@@ -672,6 +673,14 @@ void OpenSprinkler::lcd_start() {
 		// for I2C LCD, we don't need to do anything
 	}
 #endif
+}
+#else
+/** Initialize LCD for Linux-based systems */
+void OpenSprinkler::lcd_start() {
+	// initialize SSD1306
+	lcd.init();
+	lcd.begin();
+	flash_screen();
 }
 #endif
 
