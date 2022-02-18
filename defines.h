@@ -32,11 +32,11 @@ typedef unsigned long ulong;
 #define TMP_BUFFER_SIZE      255   // scratch buffer size
 
 /** Firmware version, hardware version, and maximal values */
-#define OS_FW_VERSION  219  // Firmware version: 219 means 2.1.9
+#define OS_FW_VERSION  219  // Firmware version: 220 means 2.2.0
                             // if this number is different from the one stored in non-volatile memory
                             // a device reset will be automatically triggered
 
-#define OS_FW_MINOR      4  // Firmware minor version
+#define OS_FW_MINOR      9  // Firmware minor version
 
 /** Hardware version base numbers */
 #define OS_HW_VERSION_BASE   0x00
@@ -106,6 +106,7 @@ typedef unsigned long ulong;
 #define REBOOT_CAUSE_WEATHER_FAIL 8
 #define REBOOT_CAUSE_NETWORK_FAIL 9
 #define REBOOT_CAUSE_NTP          10
+#define REBOOT_CAUSE_PROGRAM			11
 #define REBOOT_CAUSE_POWERON      99
 
 
@@ -280,7 +281,7 @@ enum {
 	#define PIN_CURR_SENSE     7    // current sensing pin (A7)
 	#define PIN_CURR_DIGITAL  24    // digital pin index for A7
 
-	#define ETHER_BUFFER_SIZE   8192
+	#define ETHER_BUFFER_SIZE   2048
 
 	#define 	wdt_reset()   __asm__ __volatile__ ("wdr")  // watchdog timer reset
 
@@ -301,7 +302,7 @@ enum {
 
 	#define PIN_CURR_SENSE    A0
 	#define PIN_FREE_LIST     {} // no free GPIO pin at the moment
-	#define ETHER_BUFFER_SIZE   8192
+	#define ETHER_BUFFER_SIZE   2048
 
 	#define PIN_ETHER_CS       16 // ENC28J60 CS (chip select pin) is 16 on OS 3.2.
 
@@ -314,6 +315,8 @@ enum {
 	extern byte PIN_BOOST;
 	extern byte PIN_BOOST_EN;
 	extern byte PIN_LATCH_COM;
+	extern byte PIN_LATCH_COMA;
+	extern byte PIN_LATCH_COMK;
 	extern byte PIN_SENSOR1;
 	extern byte PIN_SENSOR2;
 	extern byte PIN_IOEXP_INT;
@@ -351,15 +354,19 @@ enum {
 
 	/* OS30 revision 2 pin defines */
 	// pins on PCA9555A IO expander have pin numbers IOEXP_PIN+i
-	#define V2_IO_CONFIG         0x1F00 // config bits
-	#define V2_IO_OUTPUT         0x1F00 // output bits
+	#define V2_IO_CONFIG         0x1000 // config bits
+	#define V2_IO_OUTPUT         0x1E00 // output bits
 	#define V2_PIN_BUTTON_1      2 // button 1
 	#define V2_PIN_BUTTON_2      0 // button 2
 	#define V2_PIN_BUTTON_3      IOEXP_PIN+12 // button 3
 	#define V2_PIN_RFTX          15
 	#define V2_PIN_BOOST         IOEXP_PIN+13
 	#define V2_PIN_BOOST_EN      IOEXP_PIN+14
-	#define V2_PIN_LATCH_COM     IOEXP_PIN+15  
+	#define V2_PIN_LATCH_COMA    IOEXP_PIN+8  // latch COM+ (anode)
+	#define V2_PIN_SRLAT         IOEXP_PIN+9  // shift register latch
+	#define V2_PIN_SRCLK         IOEXP_PIN+10 // shift register clock
+	#define V2_PIN_SRDAT         IOEXP_PIN+11 // shift register data
+	#define V2_PIN_LATCH_COMK    IOEXP_PIN+15 // latch COM- (cathode)
 	#define V2_PIN_SENSOR1       3  // sensor 1
 	#define V2_PIN_SENSOR2       10 // sensor 2
 

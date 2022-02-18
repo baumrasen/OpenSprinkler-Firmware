@@ -35,7 +35,7 @@
 	#include <Arduino.h>
 	#include <Wire.h>
 	#include <SPI.h>
-	#include <UIPEthernet.h>
+	#include <Ethernet.h>
 	#include "I2CRTC.h"
 
 	#if defined(ESP8266)
@@ -226,6 +226,8 @@ public:
 	static void nvdata_save();
 
 	static void options_setup();
+	static void pre_factory_reset();
+	static void factory_reset();
 	static void iopts_load();
 	static void iopts_save();
 	static bool sopt_save(byte oid, const char *buf);
@@ -272,6 +274,21 @@ public:
 	static void lcd_print_station(byte line, char c);				// print station bits of the board selected by display_board
 	static void lcd_print_version(byte v);									 // print version number
 
+	static String time2str(uint32_t t) {
+		uint16_t h = hour(t);
+		uint16_t m = minute(t);
+		uint16_t s = second(t);
+		String str = "";
+		str+=h/10;
+		str+=h%10;
+		str+=":";
+		str+=m/10;
+		str+=m%10;
+		str+=":";
+		str+=s/10;
+		str+=s%10;
+		return str;
+	}
 	// -- UI and buttons
 	static byte button_read(byte waitmode); // Read button value. options for 'waitmodes' are:
 																					// BUTTON_WAIT_NONE, BUTTON_WAIT_RELEASE, BUTTON_WAIT_HOLD
@@ -312,6 +329,8 @@ private:
 	static void latch_close(byte sid);
 	static void latch_setzonepin(byte sid, byte value);
 	static void latch_setallzonepins(byte value);
+	static void latch_disable_alloutputs_v2();
+	static void latch_setzoneoutput_v2(byte sid, byte A, byte K);
 	static void latch_apply_all_station_bits();
 	static byte prev_station_bits[];
 	#endif
@@ -330,8 +349,6 @@ private:
 // todo
 #if defined(ARDUINO)
 	extern EthernetServer *m_server;
-	extern EthernetClient *m_client;
-	extern EthernetUDP		*Udp;  
 	#if defined(ESP8266)
 	extern ESP8266WebServer *wifi_server;
 	#endif
