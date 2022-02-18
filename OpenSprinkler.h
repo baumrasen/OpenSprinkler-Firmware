@@ -55,7 +55,7 @@
 	#include <netdb.h>	
 	#include <sys/stat.h>  
 	#include "etherport.h"
-	#include "SSD1306Display.h"
+	#include "SSD1306DisplayLinux.h"
 #endif // end of headers
 
 /** Non-volatile data structure */
@@ -148,7 +148,7 @@ public:
 	static LiquidCrystal lcd; // 16x2 character LCD
 #else
 	// todo: LCD define for RPI/BBB
-	static SSD1306Display lcd;	// 128x64 OLED display
+	static SSD1306DisplayLinux lcd;	// 128x64 OLED display
 #endif
 
 #if defined(OSPI)

@@ -10,6 +10,11 @@ https://openthings.freshdesk.com/support/solutions/articles/5000165132-how-to-co
 For OSPi/OSBO or other Linux-based OpenSprinkler:
 https://openthings.freshdesk.com/support/solutions/articles/5000631599-installing-and-updating-the-unified-firmware
 
+Library for display:
+https://github.com/lexus2k/lcdgfx
+Download to lcdgfx beside opensprinkler folder
+(it is included in build.sh)
+
 ============================================
 Questions and comments:
 http://www.opensprinkler.com

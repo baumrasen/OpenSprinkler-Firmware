@@ -1,18 +1,18 @@
 #ifndef SSD1306_DISPLAY_H
 #define SSD1306_DISPLAY_H
 
-#if defined(ESP8266)
+// #if defined(ESP8266)
 
-#include <SSD1306.h>
+#include <lcdgfx.h>
 #include "font.h"
 #include "images.h"
 
 #define LCD_STD 0			// Standard LCD
 #define LCD_I2C 1
 
-class SSD1306Display : public SSD1306{
+class SSD1306DisplayLinux : public SSD1306{
 public:
-	SSD1306Display(uint8_t _addr, uint8_t _sda, uint8_t _scl) : SSD1306(_addr, _sda, _scl) {
+	SSD1306DisplayLinux(uint8_t _addr, uint8_t _sda, uint8_t _scl) : SSD1306(_addr, _sda, _scl) {
 		cx = 0;
 		cy = 0;
 		for(byte i=0;i<NUM_CUSTOM_ICONS;i++) custom_chars[i]=NULL;
@@ -77,7 +77,7 @@ private:
 	PGM_P custom_chars[NUM_CUSTOM_ICONS];
 };
 
-#endif
+// #endif // ESP8266 only
 
 #endif // SSD1306_DISPLAY_H
 
