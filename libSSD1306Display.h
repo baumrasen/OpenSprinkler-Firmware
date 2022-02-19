@@ -12,12 +12,12 @@
 
 class libSSD1306Display : public SSD1306{
 public:
-	// libSSD1306Display(uint8_t _addr, uint8_t _sda, uint8_t _scl) : SSD1306(_addr, _sda, _scl) {
+	libSSD1306Display(uint8_t _addr, uint8_t _sda, uint8_t _scl) : SSD1306(_addr, _sda, _scl) {
 	// 	cx = 0;
 	// 	cy = 0;
 	// 	for(byte i=0;i<NUM_CUSTOM_ICONS;i++) custom_chars[i]=NULL;
 	// }
-	libSSD1306Display::OledI2C SSD1306{"/dev/i2c-1", 0x3C};
+	// libSSD1306Display::OledI2C SSD1306{"/dev/i2c-1", 0x3C};
 	void begin() {
 		// Wire.setClock(400000L); // lower clock to 400kHz
 		// flipScreenVertically();
