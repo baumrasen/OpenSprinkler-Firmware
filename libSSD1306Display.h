@@ -1,5 +1,5 @@
-#ifndef SSD1306_DISPLAY_H
-#define SSD1306_DISPLAY_H
+#ifndef LIBSSD1306_DISPLAY_H
+#define LIBSSD1306_DISPLAY_H
 
 #if !defined(ARDUINO) && !defined(ESP8266)
 
@@ -78,7 +78,7 @@
 
 class libSSD1306Display : public OledI2C {
 public:
-	libSSD1306Display() {}
+	libSSD1306Display(const std::string& device, uint8_t address) : OledI2C(device, address) {}
 	void init();
 
 	void begin();
@@ -143,4 +143,4 @@ private:
 
 #endif
 
-#endif // SSD1306_DISPLAY_H
+#endif // LIBSSD1306_DISPLAY_H

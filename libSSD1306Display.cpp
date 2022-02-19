@@ -24,11 +24,6 @@
 // can't assume that its in that state when a sketch starts (and the
 // libSSD1306Display constructor is called).
 
-namespace
-{
-volatile static std::sig_atomic_t run = 1;
-}
-
 void libSSD1306Display::begin() {
 	if (_type == LCD_I2C) {
 		_displayfunction = LCD_4BITMODE | LCD_2LINE | LCD_5x8DOTS;
@@ -150,33 +145,6 @@ void libSSD1306Display::begin() {
 
 void libSSD1306Display::init()
 {
-	try
-    {
-        constexpr std::array<int, 2> signals{SIGINT, SIGTERM};
-
-        for (auto signal : signals)
-        {
-            if (std::signal(signal, signalHandler) == SIG_ERR)
-            {
-                std::string what{"installing "};
-                what += strsignal(signal);
-                what += " signal handler";
-
-                throw std::system_error(errno,
-                                        std::system_category(),
-                                        what);
-            }
-        }
-
-        SSD1306::OledI2C oled{"/dev/i2c-1", 0x3C};
-    }
-    catch (std::exception& e)
-    {
-        std::cerr << e.what() << "\n";
-    }
-
-    return 0;
-
 	_rs_pin = rs;
 	_rw_pin = rw;
 	_enable_pin = enable;
@@ -229,7 +197,7 @@ void libSSD1306Display::clear()
 {
 	// command(LCD_CLEARDISPLAY);// clear display, set cursor position to zero
 	// delayMicroseconds(2000);	// this command takes a long time!
-	oled.clear();
+	clear();
 }
 
 void libSSD1306Display::home()
@@ -410,20 +378,5 @@ void libSSD1306Display::pulseEnable(void) {
 	digitalWrite(_enable_pin, LOW);
 	delayMicroseconds(100);		// commands need > 37us to settle
 }
-
-static void
-signalHandler(
-    int signalNumber)
-{
-    switch (signalNumber)
-    {
-    case SIGINT:
-    case SIGTERM:
-
-        run = 0;
-        break;
-    };
-}
-
 
 #endif
