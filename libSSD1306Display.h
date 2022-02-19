@@ -13,10 +13,10 @@
 class libSSD1306Display : public OledI2C{
 public:
 	libSSD1306Display() : OledI2C("/dev/i2c-1", 0x3C) {
-	// 	cx = 0;
-	// 	cy = 0;
-	// 	for(byte i=0;i<NUM_CUSTOM_ICONS;i++) custom_chars[i]=NULL;
-	// }
+	 	cx = 0;
+	 	cy = 0;
+	 	for(byte i=0;i<NUM_CUSTOM_ICONS;i++) custom_chars[i]=NULL;
+	}
 	// libSSD1306Display::OledI2C SSD1306{"/dev/i2c-1", 0x3C};
 	void begin() {
 		// Wire.setClock(400000L); // lower clock to 400kHz
