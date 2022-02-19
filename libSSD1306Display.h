@@ -10,7 +10,7 @@
 #define LCD_STD 0			// Standard LCD
 #define LCD_I2C 1
 
-class libSSD1306Display : public SSD1306{
+class libSSD1306Display : public OledI2C{
 public:
 	libSSD1306Display() : OledI2C("/dev/i2c-1", 0x3C) {
 	// 	cx = 0;
