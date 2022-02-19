@@ -25,185 +25,32 @@
 // libSSD1306Display constructor is called).
 
 void libSSD1306Display::begin() {
-	if (_type == LCD_I2C) {
-		_displayfunction = LCD_4BITMODE | LCD_2LINE | LCD_5x8DOTS;
-
-		// SEE PAGE 45/46 FOR INITIALIZATION SPECIFICATION!
-		// according to datasheet, we need at least 40ms after power rises above 2.7V
-		// before sending commands. Arduino can turn on way befer 4.5V so we'll wait 50
-		delay(50); 
-
-		// Now we pull both RS and R/W low to begin commands
-		expanderWrite(_backlightval);	// reset expanderand turn backlight off (Bit 8 =1)
-		delay(1000);
-
-		//put the LCD into 4 bit mode
-		// this is according to the hitachi HD44780 datasheet
-		// figure 24, pg 46
-
-		// we start in 8bit mode, try to set 4 bit mode
-		write4bits(0x03 << 4);
-		delayMicroseconds(4500); // wait min 4.1ms
-
-		// second try
-		write4bits(0x03 << 4);
-		delayMicroseconds(4500); // wait min 4.1ms
-
-		// third go!
-		write4bits(0x03 << 4); 
-		delayMicroseconds(150);
-
-		// finally, set to 4-bit interface
-		write4bits(0x02 << 4); 
-
-		// set # lines, font size, etc.
-		command(LCD_FUNCTIONSET | _displayfunction);	
 	
-		// turn the display on with no cursor or blinking default
-		_displaycontrol = LCD_DISPLAYON | LCD_CURSOROFF | LCD_BLINKOFF;
-		display();
-	
-		// clear it off
-		clear();
-	
-		// Initialize to default text direction (for roman languages)
-		_displaymode = LCD_ENTRYLEFT | LCD_ENTRYSHIFTDECREMENT;
-	
-		// set the entry mode
-		command(LCD_ENTRYMODESET | _displaymode);
-	
-		home();
-	}
-	
-	if (_type == LCD_STD) {	
-		_displayfunction |= LCD_2LINE;
-		_numlines = 2;
-		_currline = 0;
-
-		// SEE PAGE 45/46 FOR INITIALIZATION SPECIFICATION!
-		// according to datasheet, we need at least 40ms after power rises above 2.7V
-		// before sending commands. Arduino can turn on way befer 4.5V so we'll wait 50
-		delayMicroseconds(50000); 
-		// Now we pull both RS and R/W low to begin commands
-		digitalWrite(_rs_pin, LOW);
-		digitalWrite(_enable_pin, LOW);
-		if (_rw_pin != 255) { 
-			digitalWrite(_rw_pin, LOW);
-		}
-		
-		//put the LCD into 4 bit or 8 bit mode
-		if (! (_displayfunction & LCD_8BITMODE)) {
-			// this is according to the hitachi HD44780 datasheet
-			// figure 24, pg 46
-
-			// we start in 8bit mode, try to set 4 bit mode
-			write4bits(0x03);
-			delayMicroseconds(4500); // wait min 4.1ms
-
-			// second try
-			write4bits(0x03);
-			delayMicroseconds(4500); // wait min 4.1ms
-			
-			// third go!
-			write4bits(0x03); 
-			delayMicroseconds(150);
-
-			// finally, set to 4-bit interface
-			write4bits(0x02); 
-		} else {
-			// this is according to the hitachi HD44780 datasheet
-			// page 45 figure 23
-
-			// Send function set command sequence
-			command(LCD_FUNCTIONSET | _displayfunction);
-			delayMicroseconds(4500);	// wait more than 4.1ms
-
-			// second try
-			command(LCD_FUNCTIONSET | _displayfunction);
-			delayMicroseconds(150);
-
-			// third go
-			command(LCD_FUNCTIONSET | _displayfunction);
-		}
-
-		// finally, set # lines, font size, etc.
-		command(LCD_FUNCTIONSET | _displayfunction);	
-
-		// turn the display on with no cursor or blinking default
-		_displaycontrol = LCD_DISPLAYON | LCD_CURSOROFF | LCD_BLINKOFF;  
-		display();
+		// display();
 
 		// clear it off
-		clear();
+		SSD1306::OledI2C::clear();
 
-		// Initialize to default text direction (for romance languages)
-		_displaymode = LCD_ENTRYLEFT | LCD_ENTRYSHIFTDECREMENT;
-		// set the entry mode
-		command(LCD_ENTRYMODESET | _displaymode);
 	}
 }
 
-void libSSD1306Display::init()
-{
-	_rs_pin = rs;
-	_rw_pin = rw;
-	_enable_pin = enable;
-	
-	_data_pins[0] = d0;
-	_data_pins[1] = d1;
-	_data_pins[2] = d2;
-	_data_pins[3] = d3; 
-	_data_pins[4] = d4;
-	_data_pins[5] = d5;
-	_data_pins[6] = d6;
-	_data_pins[7] = d7; 
-	
-	// Wire.begin();
-	_type = LCD_STD;
-
-	// detect I2C and assign _type variable accordingly
-	// Wire.beginTransmission(LCD_I2C_ADDR1);	// check type 1
-	// Wire.write(0x00);
-	// uint8_t ret1 = Wire.endTransmission();
-	// Wire.beginTransmission(LCD_I2C_ADDR2);	// check type 2
-	//Wire.write(0x00);
-	// uint8_t ret2 = Wire.endTransmission();
-
-	if (!ret1 || !ret2)  _type = LCD_I2C;  
-	if (_type == LCD_I2C) {
-		if(!ret1) _addr = LCD_I2C_ADDR1;
-		else _addr = LCD_I2C_ADDR2;
-		_cols = 16;
-		_rows = 2;
-		_charsize = LCD_5x8DOTS;
-		_backlightval = LCD_BACKLIGHT;
-	}		
-
-	if (_type == LCD_STD) {
-		pinMode(_rs_pin, OUTPUT);
-		// we can save 1 pin by not using RW. Indicate by passing 255 instead of pin#
-		if (_rw_pin != 255) { 
-			pinMode(_rw_pin, OUTPUT);
-		}
-		pinMode(_enable_pin, OUTPUT);
-		
-	}
-	_displayfunction = LCD_4BITMODE | LCD_2LINE | LCD_5x8DOTS;
-
-}
+// void libSSD1306Display::init()
+// {
+// 	SSD1306::OledI2C::init();
+// }
 
 /********** high level commands, for the user! */
-void libSSD1306Display::clear()
-{
-	// command(LCD_CLEARDISPLAY);// clear display, set cursor position to zero
-	// delayMicroseconds(2000);	// this command takes a long time!
-	clear();
-}
+// void libSSD1306Display::clear()
+// {
+// 	// command(LCD_CLEARDISPLAY);// clear display, set cursor position to zero
+// 	// delayMicroseconds(2000);	// this command takes a long time!
+// 	clear();
+// }
 
 void libSSD1306Display::home()
 {
-	command(LCD_RETURNHOME);	// set cursor position to zero
-	delayMicroseconds(2000);	// this command takes a long time!
+	// command(LCD_RETURNHOME);	// set cursor position to zero
+	// delayMicroseconds(2000);	// this command takes a long time!
 }
 
 void libSSD1306Display::setCursor(uint8_t col, uint8_t row)
@@ -219,69 +66,69 @@ void libSSD1306Display::setCursor(uint8_t col, uint8_t row)
 			row = _numlines-1;
 		}
 	}  
-	command(LCD_SETDDRAMADDR | (col + row_offsets[row]));
+	// command(LCD_SETDDRAMADDR | (col + row_offsets[row]));
 }
 
 // Turn the display on/off (quickly)
 void libSSD1306Display::noDisplay() {
 	_displaycontrol &= ~LCD_DISPLAYON;
-	command(LCD_DISPLAYCONTROL | _displaycontrol);
+	// command(LCD_DISPLAYCONTROL | _displaycontrol);
 }
 void libSSD1306Display::display() {
 	_displaycontrol |= LCD_DISPLAYON;
-	command(LCD_DISPLAYCONTROL | _displaycontrol);
+	// command(LCD_DISPLAYCONTROL | _displaycontrol);
 }
 
 // Turns the underline cursor on/off
 void libSSD1306Display::noCursor() {
 	_displaycontrol &= ~LCD_CURSORON;
-	command(LCD_DISPLAYCONTROL | _displaycontrol);
+	// command(LCD_DISPLAYCONTROL | _displaycontrol);
 }
 void libSSD1306Display::cursor() {
 	_displaycontrol |= LCD_CURSORON;
-	command(LCD_DISPLAYCONTROL | _displaycontrol);
+	// command(LCD_DISPLAYCONTROL | _displaycontrol);
 }
 
 // Turn on and off the blinking cursor
 void libSSD1306Display::noBlink() {
 	_displaycontrol &= ~LCD_BLINKON;
-	command(LCD_DISPLAYCONTROL | _displaycontrol);
+	// command(LCD_DISPLAYCONTROL | _displaycontrol);
 }
 void libSSD1306Display::blink() {
 	_displaycontrol |= LCD_BLINKON;
-	command(LCD_DISPLAYCONTROL | _displaycontrol);
+	// command(LCD_DISPLAYCONTROL | _displaycontrol);
 }
 
 // These commands scroll the display without changing the RAM
 void libSSD1306Display::scrollDisplayLeft(void) {
-	command(LCD_CURSORSHIFT | LCD_DISPLAYMOVE | LCD_MOVELEFT);
+	// command(LCD_CURSORSHIFT | LCD_DISPLAYMOVE | LCD_MOVELEFT);
 }
 void libSSD1306Display::scrollDisplayRight(void) {
-	command(LCD_CURSORSHIFT | LCD_DISPLAYMOVE | LCD_MOVERIGHT);
+	// command(LCD_CURSORSHIFT | LCD_DISPLAYMOVE | LCD_MOVERIGHT);
 }
 
 // This is for text that flows Left to Right
 void libSSD1306Display::leftToRight(void) {
 	_displaymode |= LCD_ENTRYLEFT;
-	command(LCD_ENTRYMODESET | _displaymode);
+	// command(LCD_ENTRYMODESET | _displaymode);
 }
 
 // This is for text that flows Right to Left
 void libSSD1306Display::rightToLeft(void) {
 	_displaymode &= ~LCD_ENTRYLEFT;
-	command(LCD_ENTRYMODESET | _displaymode);
+	// command(LCD_ENTRYMODESET | _displaymode);
 }
 
 // This will 'right justify' text from the cursor
 void libSSD1306Display::autoscroll(void) {
 	_displaymode |= LCD_ENTRYSHIFTINCREMENT;
-	command(LCD_ENTRYMODESET | _displaymode);
+	// command(LCD_ENTRYMODESET | _displaymode);
 }
 
 // This will 'left justify' text from the cursor
 void libSSD1306Display::noAutoscroll(void) {
 	_displaymode &= ~LCD_ENTRYSHIFTINCREMENT;
-	command(LCD_ENTRYMODESET | _displaymode);
+	// command(LCD_ENTRYMODESET | _displaymode);
 }
 
 // Allows us to fill the first 8 CGRAM locations
@@ -289,22 +136,22 @@ void libSSD1306Display::noAutoscroll(void) {
 //void libSSD1306Display::createChar(uint8_t location, uint8_t charmap[]) {
 void libSSD1306Display::createChar(uint8_t location, PGM_P ptr) {
 	location &= 0x7; // we only have 8 locations 0-7
-	command(LCD_SETCGRAMADDR | (location << 3));
+	// command(LCD_SETCGRAMADDR | (location << 3));
 	for (int i=0; i<8; i++) {
 		//write(charmap[i]);
-		write(pgm_read_byte(ptr++));
+		// write(pgm_read_byte(ptr++));
 	}
 }
 
 // Turn the (optional) backlight off/on
 void libSSD1306Display::noBacklight(void) {
 	_backlightval=LCD_NOBACKLIGHT;
-	expanderWrite(0);
+	// expanderWrite(0);
 }
 
 void libSSD1306Display::backlight(void) {
 	_backlightval=LCD_BACKLIGHT;
-	expanderWrite(0);
+	// expanderWrite(0);
 }
 
 /*********** mid level commands, for sending data/cmds */

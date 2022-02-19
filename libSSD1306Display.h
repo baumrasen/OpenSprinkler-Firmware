@@ -64,11 +64,11 @@
 class libSSD1306Display : public SSD1306::OledI2C {
 public:
 	libSSD1306Display(const std::string& device, uint8_t address) : SSD1306::OledI2C(device, address) {}
-	void init();
+	// void init();
 
-	void begin();
+	// void begin();
 
-	void clear();
+	// void clear();
 	void clear(int start, int end) { clear(); }
 	void home();
 
