@@ -24,19 +24,17 @@
 // can't assume that its in that state when a sketch starts (and the
 // libSSD1306Display constructor is called).
 
-void libSSD1306Display::begin() {
-	
+void libSSD1306Display::begin()
+{	
 		// display();
 
 		// clear it off
 		SSD1306::OledI2C::clear();
-
-	}
 }
 
 void libSSD1306Display::init()
 {
-	SSD1306::OledI2C::init();
+	// SSD1306::OledI2C::init();
 }
 
 /********** high level commands, for the user! */
