@@ -61,7 +61,7 @@
 #define LCD_I2C_ADDR1 0x27 // type using PCF8574,  at address 0x27
 #define LCD_I2C_ADDR2 0x3F // type using PCF8574A, at address 0x3F
 
-class libSSD1306Display : public Print {
+class libSSD1306Display : public OledI2C {
 public:
 	libSSD1306Display() {}
 	void init();
@@ -95,7 +95,7 @@ public:
 	void noBacklight();
 	void backlight();
 	 
-	using Print::write;	 
+	// using Print::write;	 
 private:
 	void send(uint8_t, uint8_t);
 	void write4bits(uint8_t);
