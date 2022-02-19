@@ -1,5 +1,5 @@
-#ifndef LIBSSD1306_DISPLAY_H
-#define LIBSSD1306_DISPLAY_H
+#ifndef LIBSSD1306DISPLAY_H
+#define LIBSSD1306DISPLAY_H
 
 #if !defined(ARDUINO) && !defined(ESP8266)
 
@@ -127,4 +127,4 @@ private:
 
 #endif
 
-#endif // LIBSSD1306_DISPLAY_H
+#endif // LIBSSD1306DISPLAY_H
