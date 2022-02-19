@@ -37,6 +37,19 @@ void libSSD1306Display::init()
 	// SSD1306::OledI2C::init();
 }
 
+void libSSD1306Display::print(string text)
+{
+	// SSD1306::OledI2C::init();
+
+	SSD1306::OledI2C::clear();
+
+	// auto length = strftime(time, sizeof(time), "%l:%M:%S %P", tm);
+    // int offset = (128 - (8 * length)) / 2;
+
+	SSD1306::OledI2C::displayUpdate();
+
+}
+
 /********** high level commands, for the user! */
 // void libSSD1306Display::clear()
 // {
@@ -53,18 +66,10 @@ void libSSD1306Display::home()
 
 void libSSD1306Display::setCursor(uint8_t col, uint8_t row)
 {
-	int row_offsets[] = { 0x00, 0x40, 0x14, 0x54 };
-	if (_type == LCD_I2C) {
-		if (row > _rows) {
-			row = _rows-1;		// we count rows starting w/0
-		}
-	}
-	if (_type == LCD_STD) {
-		if (row >= _numlines) {
-			row = _numlines-1;
-		}
-	}  
-	// command(LCD_SETDDRAMADDR | (col + row_offsets[row]));
+	/* assume 4 lines, the middle two lines
+		 are row 0 and 1 */
+	cy = (row+1)*fontHeight;
+	cx = col*fontWidth;
 }
 
 // Turn the display on/off (quickly)
@@ -132,13 +137,17 @@ void libSSD1306Display::noAutoscroll(void) {
 // Allows us to fill the first 8 CGRAM locations
 // with custom characters
 //void libSSD1306Display::createChar(uint8_t location, uint8_t charmap[]) {
-void libSSD1306Display::createChar(uint8_t location, PGM_P ptr) {
-	location &= 0x7; // we only have 8 locations 0-7
-	// command(LCD_SETCGRAMADDR | (location << 3));
-	for (int i=0; i<8; i++) {
-		//write(charmap[i]);
-		// write(pgm_read_byte(ptr++));
-	}
+//void libSSD1306Display::createChar(uint8_t location, PGM_P ptr) {
+//	location &= 0x7; // we only have 8 locations 0-7
+//	// command(LCD_SETCGRAMADDR | (location << 3));
+//	for (int i=0; i<8; i++) {
+//		//write(charmap[i]);
+//		// write(pgm_read_byte(ptr++));
+//	}
+//}
+
+void libSSD1306Display::createChar(byte idx, PGM_P ptr) {
+	if(idx>=0&&idx<NUM_CUSTOM_ICONS) custom_chars[idx]=ptr;
 }
 
 // Turn the (optional) backlight off/on
@@ -150,6 +159,31 @@ void libSSD1306Display::noBacklight(void) {
 void libSSD1306Display::backlight(void) {
 	_backlightval=LCD_BACKLIGHT;
 	// expanderWrite(0);
+}
+
+size_t libSSD1306Display::write(uint8_t c) {
+	setColor(BLACK);
+	fillRect(cx, cy, fontWidth, fontHeight);
+	setColor(WHITE);
+
+	if(c<NUM_CUSTOM_ICONS && custom_chars[c]!=NULL) {
+		drawXbm(cx, cy, fontWidth, fontHeight, (const byte*) custom_chars[c]);
+	} else {
+		drawString(cx, cy, String((char)c));
+	}
+	cx += fontWidth;
+	display();	// todo: not very efficient
+	return 1;
+}
+size_t libSSD1306Display::write(const char* s) {
+	uint8_t nc = strlen(s);
+	setColor(BLACK);
+	fillRect(cx, cy, fontWidth*nc, fontHeight);  
+	setColor(WHITE);
+	drawString(cx, cy, String(s));
+	cx += fontWidth*nc;
+	display();	// todo: not very efficient
+	return nc;
 }
 
 /*********** mid level commands, for sending data/cmds */

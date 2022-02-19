@@ -68,6 +68,8 @@ public:
 	void init();
 	void begin();
 
+	void print(string text);
+
 	// void clear();
 	void clear(int start, int end) { SSD1306::OledI2C::clear(); }
 	void home();
@@ -85,7 +87,7 @@ public:
 	void autoscroll();
 	void noAutoscroll();
 
-	//void createChar(uint8_t, uint8_t[]);
+	// void createChar(uint8_t, uint8_t[]);
 	void createChar(uint8_t, PGM_P ptr);
 	void setCursor(uint8_t, uint8_t); 
 	virtual size_t write(uint8_t);
@@ -95,7 +97,9 @@ public:
 	void noBacklight();
 	void backlight();
 	 
-	// using Print::write;	 
+	// using Print::write;
+	size_t write(uint8_t c)
+	size_t write(const char* s)
 private:
 	void send(uint8_t, uint8_t);
 	void write4bits(uint8_t);
@@ -122,6 +126,8 @@ private:
 	uint8_t _initialized;
 
 	uint8_t _numlines,_currline;
+
+	PGM_P custom_chars[NUM_CUSTOM_ICONS];
 
 };
 
