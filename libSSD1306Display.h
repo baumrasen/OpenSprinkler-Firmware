@@ -88,9 +88,9 @@ public:
 	void noAutoscroll();
 
 	// void createChar(uint8_t, uint8_t[]);
-	void createChar(uint8_t, PGM_P ptr);
+	void createChar(uint8_t, PGM_P);
 	void setCursor(uint8_t, uint8_t); 
-	virtual size_t write(uint8_t);
+	// virtual size_t write(uint8_t);
 	void command(uint8_t);
 
 	inline uint8_t type() { return _type; }
@@ -98,8 +98,8 @@ public:
 	void backlight();
 	 
 	// using Print::write;
-	size_t write(uint8_t c);
-	size_t write(const char* s);
+	virtual size_t write(uint8_t);
+	virtual size_t write(const char*);
 private:
 	void send(uint8_t, uint8_t);
 	void write4bits(uint8_t);

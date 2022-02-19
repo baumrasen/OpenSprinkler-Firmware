@@ -161,7 +161,7 @@ void libSSD1306Display::backlight(void) {
 	// expanderWrite(0);
 }
 
-size_t libSSD1306Display::write(uint8_t c) {
+inline size_t libSSD1306Display::write(uint8_t c) {
 	setColor(BLACK);
 	fillRect(cx, cy, fontWidth, fontHeight);
 	setColor(WHITE);
@@ -175,7 +175,7 @@ size_t libSSD1306Display::write(uint8_t c) {
 	display();	// todo: not very efficient
 	return 1;
 }
-size_t libSSD1306Display::write(const char* s) {
+inline size_t libSSD1306Display::write(const char* s) {
 	uint8_t nc = strlen(s);
 	setColor(BLACK);
 	fillRect(cx, cy, fontWidth*nc, fontHeight);  
@@ -192,10 +192,10 @@ inline void libSSD1306Display::command(uint8_t value) {
 	send(value, 0);
 }
 
-inline size_t libSSD1306Display::write(uint8_t value) {
-	send(value, Rs);
-	return 1; // assume sucess
-}
+// inline size_t libSSD1306Display::write(uint8_t value) {
+// 	send(value, Rs);
+// 	return 1; // assume sucess
+// }
 
 /************ low level data pushing commands **********/
 
