@@ -68,7 +68,7 @@ public:
 	void init();
 	void begin();
 
-	void print(string text);
+	// void print(string text);
 
 	// void clear();
 	void clear(int start, int end) { SSD1306::OledI2C::clear(); }

@@ -37,18 +37,18 @@ void libSSD1306Display::init()
 	// SSD1306::OledI2C::init();
 }
 
-void libSSD1306Display::print(string text)
-{
-	// SSD1306::OledI2C::init();
-
-	SSD1306::OledI2C::clear();
-
-	// auto length = strftime(time, sizeof(time), "%l:%M:%S %P", tm);
-    // int offset = (128 - (8 * length)) / 2;
-
-	SSD1306::OledI2C::displayUpdate();
-
-}
+// void libSSD1306Display::print(string text)
+// {
+// 	// SSD1306::OledI2C::init();
+//
+//	SSD1306::OledI2C::clear();
+//
+//	// auto length = strftime(time, sizeof(time), "%l:%M:%S %P", tm);
+//    // int offset = (128 - (8 * length)) / 2;
+//
+//	SSD1306::OledI2C::displayUpdate();
+//
+//}
 
 /********** high level commands, for the user! */
 // void libSSD1306Display::clear()
