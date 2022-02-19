@@ -98,8 +98,8 @@ public:
 	void backlight();
 	 
 	// using Print::write;
-	size_t write(uint8_t c)
-	size_t write(const char* s)
+	size_t write(uint8_t c);
+	size_t write(const char* s);
 private:
 	void send(uint8_t, uint8_t);
 	void write4bits(uint8_t);
