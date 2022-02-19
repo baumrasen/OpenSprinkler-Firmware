@@ -12,7 +12,7 @@
 
 class libSSD1306Display : public SSD1306{
 public:
-	libSSD1306Display(uint8_t _addr, uint8_t _sda, uint8_t _scl) : SSD1306(_addr, _sda, _scl) {
+	libSSD1306Display() : OledI2C("/dev/i2c-1", 0x3C) {
 	// 	cx = 0;
 	// 	cy = 0;
 	// 	for(byte i=0;i<NUM_CUSTOM_ICONS;i++) custom_chars[i]=NULL;
