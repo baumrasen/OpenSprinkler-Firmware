@@ -3,21 +3,6 @@
 
 #if !defined(ARDUINO) && !defined(ESP8266)
 
-#include <array>
-#include <chrono>
-#include <cmath>
-#include <csignal>
-#include <cstring>
-#include <exception>
-#include <iostream>
-#include <memory>
-#include <thread>
-#include <system_error>
-
-#include <time.h>
-#include <unistd.h>
-#include <sys/time.h>
-
 #include <inttypes.h>
 // #include <Print.h>
 #include "OledFont8x8.h"
