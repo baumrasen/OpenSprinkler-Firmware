@@ -76,9 +76,9 @@
 #define LCD_I2C_ADDR1 0x27 // type using PCF8574,  at address 0x27
 #define LCD_I2C_ADDR2 0x3F // type using PCF8574A, at address 0x3F
 
-class libSSD1306Display : public OledI2C {
+class libSSD1306Display : public SSD1306::OledI2C {
 public:
-	libSSD1306Display(const std::string& device, uint8_t address) : OledI2C(device, address) {}
+	libSSD1306Display(const std::string& device, uint8_t address) : SSD1306::OledI2C(device, address) {}
 	void init();
 
 	void begin();
