@@ -3,6 +3,8 @@
 
 // #if defined(ESP8266)
 
+#include "OledFont8x8.h"
+#include "OledFont8x16.h"
 #include "OledI2C.h"
 #include "font.h"
 #include "images.h"
@@ -10,18 +12,24 @@
 #define LCD_STD 0			// Standard LCD
 #define LCD_I2C 1
 
-class libSSD1306Display : public OledI2C{
+class libSSD1306Display : public SSD1306{
 public:
-	libSSD1306Display() : OledI2C("/dev/i2c-1", 0x3C) {
-	 	cx = 0;
-	 	cy = 0;
-	 	for(byte i=0;i<NUM_CUSTOM_ICONS;i++) custom_chars[i]=NULL;
+	libSSD1306Display() {}
+
+	void init() {
+		SSD1306::OledI2C oled{"/dev/i2c-1", 0x3C};
+		// Wire.setClock(400000L); // lower clock to 400kHz
+		// flipScreenVertically();
+		// setFont(Monospaced_plain_13);
+		// fontWidth = 8;
+		// fontHeight = 16;
 	}
+
 	// libSSD1306Display::OledI2C SSD1306{"/dev/i2c-1", 0x3C};
 	void begin() {
 		// Wire.setClock(400000L); // lower clock to 400kHz
 		// flipScreenVertically();
-		setFont(Monospaced_plain_13);
+		// setFont(Monospaced_plain_13);
 		fontWidth = 8;
 		fontHeight = 16;
 	}
