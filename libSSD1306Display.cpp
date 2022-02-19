@@ -34,10 +34,10 @@ void libSSD1306Display::begin() {
 	}
 }
 
-// void libSSD1306Display::init()
-// {
-// 	SSD1306::OledI2C::init();
-// }
+void libSSD1306Display::init()
+{
+	SSD1306::OledI2C::init();
+}
 
 /********** high level commands, for the user! */
 // void libSSD1306Display::clear()
