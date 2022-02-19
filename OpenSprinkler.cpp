@@ -673,7 +673,7 @@ void OpenSprinkler::lcd_start() {
 	// initialize SSD1306
 	lcd.init();
 	lcd.begin();
-	flash_screen();
+	// flash_screen();
 }
 #endif
 
