@@ -138,7 +138,6 @@ private:
 
 	uint8_t _numlines,_currline;
 
-	SSD1306::OledI2C oled;
 };
 
 #endif
