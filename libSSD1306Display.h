@@ -79,7 +79,7 @@ public:
 
 		static constexpr SSD1306::PixelStyle style{SSD1306::PixelStyle::Set};
 
-		// SSD1306::OledI2C oled{"/dev/i2c-1", 0x3C};
+		SSD1306::OledI2C oled{"/dev/i2c-1", 0x3C};
 
 		// drawString(cx, cy, String(s));
 		drawString8x16(SSD1306::OledPoint{cx, cy},
