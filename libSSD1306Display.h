@@ -13,9 +13,9 @@
 #define LCD_STD 0			// Standard LCD
 #define LCD_I2C 1
 
-class libSSD1306Display {
+class libSSD1306Display : public SSD1306::OledI2C {
 public:
-	libSSD1306Display() {}
+	libSSD1306Display() : SSD1306::OledI2C() {}
 	void init() {
 		// do nothing
 		SSD1306::OledI2C oled{"/dev/i2c-1", 0x3C};
@@ -79,7 +79,7 @@ public:
 
 		static constexpr SSD1306::PixelStyle style{SSD1306::PixelStyle::Set};
 
-		// SSD1306::OledI2C oled{"/dev/i2c-1", 0x3C};
+		SSD1306::OledI2C oled{"/dev/i2c-1", 0x3C};
 
 		// drawString(cx, cy, String(s));
 		drawString8x16(SSD1306::OledPoint{cx, cy},
