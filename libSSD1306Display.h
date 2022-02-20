@@ -18,7 +18,7 @@ public:
 	libSSD1306Display(const std::string& device, uint8_t address) : SSD1306::OledI2C(device, address) {}
 	void init() {
 		// do nothing
-		SSD1306::OledI2C oled{"/dev/i2c-1", 0x3C};
+		// SSD1306::OledI2C oled{"/dev/i2c-1", 0x3C};
 	}
 	void begin() {
 		// Wire.setClock(400000L); // lower clock to 400kHz
@@ -28,7 +28,7 @@ public:
 		fontHeight = 16;
 	}
 	void clear() {
-		// SSD1306::OledI2C oled{"/dev/i2c-1", 0x3C};
+		SSD1306::OledI2C oled{"/dev/i2c-1", 0x3C};
 		oled.clear();
 	}
 	void clear(int start, int end) {
@@ -55,7 +55,7 @@ public:
 
 		static constexpr SSD1306::PixelStyle style{SSD1306::PixelStyle::Set};
 
-		// SSD1306::OledI2C oled{"/dev/i2c-1", 0x3C};
+		SSD1306::OledI2C oled{"/dev/i2c-1", 0x3C};
 
 		if(c<NUM_CUSTOM_ICONS && custom_chars[c]!=NULL) {
 			// drawXbm(cx, cy, fontWidth, fontHeight, (const byte*) custom_chars[c]);
@@ -99,7 +99,7 @@ private:
 	uint8_t cx, cy;
 	uint8_t fontWidth, fontHeight;
 	PGM_P custom_chars[NUM_CUSTOM_ICONS];
-	SSD1306::OledI2C oled;
+	// SSD1306::OledI2C oled;
 };
 
 #endif // not ARDUINO or not ESP8266
