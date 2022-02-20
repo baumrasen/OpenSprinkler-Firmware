@@ -27,9 +27,9 @@ public:
 		SSD1306::OledI2C::clear();
 	}
 	void clear(int start, int end) {
-		setColor(BLACK);
-		fillRect(0, (start+1)*fontHeight, 128, (end-start+1)*fontHeight);
-		setColor(WHITE);
+		// setColor(BLACK);
+		// fillRect(0, (start+1)*fontHeight, 128, (end-start+1)*fontHeight);
+		// setColor(WHITE);
 	}
 	
 	uint8_t type() { return LCD_I2C; }
@@ -44,27 +44,43 @@ public:
 	void noBacklight() {/*no support*/}
 	void backlight() {/*no support*/}
 	size_t write(uint8_t c) {
-		setColor(BLACK);
-		fillRect(cx, cy, fontWidth, fontHeight);
-		setColor(WHITE);
+		// setColor(BLACK);
+		// fillRect(cx, cy, fontWidth, fontHeight);
+		// setColor(WHITE);
+
+		static constexpr SSD1306::PixelStyle style{SSD1306::PixelStyle::Set};
 
 		if(c<NUM_CUSTOM_ICONS && custom_chars[c]!=NULL) {
-			drawXbm(cx, cy, fontWidth, fontHeight, (const byte*) custom_chars[c]);
+			// drawXbm(cx, cy, fontWidth, fontHeight, (const byte*) custom_chars[c]);
 		} else {
-			drawString(cx, cy, String((char)c));
+			// drawString(cx, cy, String((char)c));
+			drawString8x16(SSD1306::OledI2C::OledPoint{cx, cy},
+						String((char)c),
+						SSD1306::OledI2C::PixelStyle::Set,
+						SSD1306::OledI2C);
 		}
 		cx += fontWidth;
-		display();	// todo: not very efficient
+		// display();	// todo: not very efficient
+		SSD1306::OledI2C::displayUpdate();
 		return 1;
 	}
 	size_t write(const char* s) {
 		uint8_t nc = strlen(s);
-		setColor(BLACK);
-		fillRect(cx, cy, fontWidth*nc, fontHeight);  
-		setColor(WHITE);
-		drawString(cx, cy, String(s));
+		// setColor(BLACK);
+		// fillRect(cx, cy, fontWidth*nc, fontHeight);  
+		// setColor(WHITE);
+
+		static constexpr SSD1306::OledI2C::PixelStyle style{SSD1306::OledI2C::PixelStyle::Set};
+
+		// drawString(cx, cy, String(s));
+		drawString8x16(SSD1306::OledI2C::OledPoint{cx, cy},
+                               String(s),
+                               SSD1306::OledI2C::PixelStyle::Set,
+                               SSD1306::OledI2C);
+
 		cx += fontWidth*nc;
-		display();	// todo: not very efficient
+		// display();	// todo: not very efficient
+		SSD1306::OledI2C::displayUpdate();
 		return nc;
 	}
 	void createChar(byte idx, PGM_P ptr) {
