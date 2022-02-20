@@ -40,9 +40,9 @@ s_opts opts = {
 #define LOGO16_GLCD_HEIGHT 16 
 #define LOGO16_GLCD_WIDTH  16 
 
-class libSSD1306Display : public ArduiPi_OLED {
+class libSSD1306Display {
 public:
-	libSSD1306Display() : ArduiPi_OLED() {}
+	libSSD1306Display() {}
 	void init() {
 		// do nothing
 		// SSD1306::OledI2C oled{"/dev/i2c-1", 0x3C};
