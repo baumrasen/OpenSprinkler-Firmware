@@ -70,7 +70,7 @@ public:
 		// fillRect(cx, cy, fontWidth*nc, fontHeight);  
 		// setColor(WHITE);
 
-		static constexpr SSD1306:::PixelStyle style{SSD1306::PixelStyle::Set};
+		static constexpr SSD1306::PixelStyle style{SSD1306::PixelStyle::Set};
 
 		// drawString(cx, cy, String(s));
 		drawString8x16(SSD1306::OledPoint{cx, cy},
