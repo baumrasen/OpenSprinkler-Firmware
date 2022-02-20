@@ -57,7 +57,7 @@ public:
 			drawString8x16(SSD1306::OledI2C::OledPoint{cx, cy},
 						String((char)c),
 						SSD1306::OledI2C::PixelStyle::Set,
-						SSD1306::OledI2C);
+						SSD1306::OledI2C;
 		}
 		cx += fontWidth;
 		// display();	// todo: not very efficient
@@ -76,7 +76,7 @@ public:
 		drawString8x16(SSD1306::OledI2C::OledPoint{cx, cy},
                                String(s),
                                SSD1306::OledI2C::PixelStyle::Set,
-                               SSD1306::OledI2C);
+                               SSD1306::OledI2C;
 
 		cx += fontWidth*nc;
 		// display();	// todo: not very efficient
