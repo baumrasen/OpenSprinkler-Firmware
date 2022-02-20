@@ -55,7 +55,7 @@ public:
 		} else {
 			// drawString(cx, cy, String((char)c));
 			drawString8x16(SSD1306::OledPoint{cx, cy},
-						String((char)c)),
+						(char)c,
 						SSD1306::PixelStyle::Set,
 						SSD1306::OledI2C;
 		}
