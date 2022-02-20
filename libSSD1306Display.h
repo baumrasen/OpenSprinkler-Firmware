@@ -54,9 +54,9 @@ public:
 			// drawXbm(cx, cy, fontWidth, fontHeight, (const byte*) custom_chars[c]);
 		} else {
 			// drawString(cx, cy, String((char)c));
-			drawString8x16(SSD1306::OledI2C::OledPoint{cx, cy},
+			drawString8x16(SSD1306::OledPoint{cx, cy},
 						String((char)c),
-						SSD1306::OledI2C::PixelStyle::Set,
+						SSD1306::PixelStyle::Set,
 						SSD1306::OledI2C;
 		}
 		cx += fontWidth;
@@ -70,12 +70,12 @@ public:
 		// fillRect(cx, cy, fontWidth*nc, fontHeight);  
 		// setColor(WHITE);
 
-		static constexpr SSD1306::OledI2C::PixelStyle style{SSD1306::OledI2C::PixelStyle::Set};
+		static constexpr SSD1306:::PixelStyle style{SSD1306::PixelStyle::Set};
 
 		// drawString(cx, cy, String(s));
-		drawString8x16(SSD1306::OledI2C::OledPoint{cx, cy},
+		drawString8x16(SSD1306::OledPoint{cx, cy},
                                String(s),
-                               SSD1306::OledI2C::PixelStyle::Set,
+                               SSD1306::PixelStyle::Set,
                                SSD1306::OledI2C;
 
 		cx += fontWidth*nc;
