@@ -50,6 +50,8 @@ public:
 
 		static constexpr SSD1306::PixelStyle style{SSD1306::PixelStyle::Set};
 
+		SSD1306::OledI2C oled{"/dev/i2c-1", 0x3C};
+
 		if(c<NUM_CUSTOM_ICONS && custom_chars[c]!=NULL) {
 			// drawXbm(cx, cy, fontWidth, fontHeight, (const byte*) custom_chars[c]);
 		} else {
@@ -57,7 +59,7 @@ public:
 			drawString8x16(SSD1306::OledPoint{cx, cy},
 						(char)c,
 						SSD1306::PixelStyle::Set,
-						libSSD1306Display&);
+						oled);
 		}
 		cx += fontWidth;
 		// display();	// todo: not very efficient
@@ -72,11 +74,13 @@ public:
 
 		static constexpr SSD1306::PixelStyle style{SSD1306::PixelStyle::Set};
 
+		SSD1306::OledI2C oled{"/dev/i2c-1", 0x3C};
+
 		// drawString(cx, cy, String(s));
 		drawString8x16(SSD1306::OledPoint{cx, cy},
                                String(s),
                                SSD1306::PixelStyle::Set,
-                               libSSD1306Display&);
+                               oled);
 
 		cx += fontWidth*nc;
 		// display();	// todo: not very efficient
