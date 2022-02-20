@@ -56,10 +56,10 @@ public:
 			// drawXbm(cx, cy, fontWidth, fontHeight, (const byte*) custom_chars[c]);
 		} else {
 			// drawString(cx, cy, String((char)c));
-			drawString8x16(SSD1306::OledPoint{cx, cy},
-						String((char)c),
-						SSD1306::PixelStyle::Set,
-						oled);
+			// drawString8x16(SSD1306::OledPoint{cx, cy},
+			// 			String((char)c),
+			// 			SSD1306::PixelStyle::Set,
+			// 			oled);
 		}
 		cx += fontWidth;
 		// display();	// todo: not very efficient
