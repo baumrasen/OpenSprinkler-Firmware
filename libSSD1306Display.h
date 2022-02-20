@@ -3,9 +3,9 @@
 
 #if !defined(ARDUINO) && !defined(ESP8266)
 
-#include "OledFont8x8.h"
-#include "OledFont8x16.h"
-#include "OledI2C.h"
+#include "ArduiPi_OLED_lib.h"
+#include "Adafruit_GFX.h"
+#include "ArduiPi_OLED.h"
 
 #include "font.h"
 #include "images.h"
@@ -13,14 +13,61 @@
 #define LCD_STD 0			// Standard LCD
 #define LCD_I2C 1
 
-class libSSD1306Display : public SSD1306::OledI2C {
+// Instantiate the display
+ArduiPi_OLED display;
+
+
+// Config Option
+struct s_opts
+{
+	int oled;
+	int verbose;
+} ;
+
+int sleep_divisor = 1 ;
+	
+// default options values
+s_opts opts = {
+	OLED_SH1106_I2C_128x64,	// Default oled
+  false										// Not verbose
+};
+
+#define NUMFLAKES 10
+#define XPOS 0
+#define YPOS 1
+#define DELTAY 2
+
+#define LOGO16_GLCD_HEIGHT 16 
+#define LOGO16_GLCD_WIDTH  16 
+
+class libSSD1306Display : public ArduiPi_OLED {
 public:
-	libSSD1306Display(const std::string& device, uint8_t address) : SSD1306::OledI2C(device, address) {}
+	libSSD1306Display() : ArduiPi_OLED() {}
 	void init() {
 		// do nothing
 		// SSD1306::OledI2C oled{"/dev/i2c-1", 0x3C};
+		// SPI
+		if (display.oled_is_spi_proto(opts.oled))
+		{
+			// SPI change parameters to fit to your LCD
+			if ( !display.init(OLED_SPI_DC,OLED_SPI_RESET,OLED_SPI_CS, opts.oled) )
+				exit(EXIT_FAILURE);
+		}
+		else
+		{
+			// I2C change parameters to fit to your LCD
+			if ( !display.init(OLED_I2C_RESET,opts.oled) )
+				exit(EXIT_FAILURE);
+		}
 	}
 	void begin() {
+
+		display.begin();
+	
+		// init done
+		display.clearDisplay();   // clears the screen  buffer
+		display.display();   		// display it (clear display)
+		
 		// Wire.setClock(400000L); // lower clock to 400kHz
 		//flipScreenVertically();
 		// setFont(Monospaced_plain_13);
@@ -28,8 +75,9 @@ public:
 		fontHeight = 16;
 	}
 	void clear() {
-		SSD1306::OledI2C oled{"/dev/i2c-1", 0x3C};
-		oled.clear();
+		// SSD1306::OledI2C oled{"/dev/i2c-1", 0x3C};
+		// oled.clear();
+		display.clearDisplay();
 	}
 	void clear(int start, int end) {
 		// setColor(BLACK);
@@ -53,9 +101,9 @@ public:
 		// fillRect(cx, cy, fontWidth, fontHeight);
 		// setColor(WHITE);
 
-		static constexpr SSD1306::PixelStyle style{SSD1306::PixelStyle::Set};
+		// static constexpr SSD1306::PixelStyle style{SSD1306::PixelStyle::Set};
 
-		SSD1306::OledI2C oled{"/dev/i2c-1", 0x3C};
+		// SSD1306::OledI2C oled{"/dev/i2c-1", 0x3C};
 
 		if(c<NUM_CUSTOM_ICONS && custom_chars[c]!=NULL) {
 			// drawXbm(cx, cy, fontWidth, fontHeight, (const byte*) custom_chars[c]);
@@ -68,7 +116,7 @@ public:
 		}
 		cx += fontWidth;
 		// display();	// todo: not very efficient
-		oled.displayUpdate();
+		display.display();
 		return 1;
 	}
 	size_t write(const char* s) {
@@ -77,19 +125,19 @@ public:
 		// fillRect(cx, cy, fontWidth*nc, fontHeight);  
 		// setColor(WHITE);
 
-		static constexpr SSD1306::PixelStyle style{SSD1306::PixelStyle::Set};
+		// static constexpr SSD1306::PixelStyle style{SSD1306::PixelStyle::Set};
 
-		SSD1306::OledI2C oled{"/dev/i2c-1", 0x3C};
+		// SSD1306::OledI2C oled{"/dev/i2c-1", 0x3C};
 
 		// drawString(cx, cy, String(s));
-		drawString8x16(SSD1306::OledPoint{cx, cy},
-                               String(s),
-                               SSD1306::PixelStyle::Set,
-                               oled);
+		display.setCursor(cx, cy);
+		display.print(String(s));
+
 
 		cx += fontWidth*nc;
 		// display();	// todo: not very efficient
-		SSD1306::OledI2C::displayUpdate();
+		// SSD1306::OledI2C::displayUpdate();
+		display.display();
 		return nc;
 	}
 	void createChar(byte idx, PGM_P ptr) {
