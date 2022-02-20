@@ -99,7 +99,7 @@ private:
 	uint8_t cx, cy;
 	uint8_t fontWidth, fontHeight;
 	PGM_P custom_chars[NUM_CUSTOM_ICONS];
-	SSD1306::OledI2C oled
+	SSD1306::OledI2C oled;
 };
 
 #endif // not ARDUINO or not ESP8266
