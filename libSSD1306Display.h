@@ -27,7 +27,8 @@ public:
 		fontHeight = 16;
 	}
 	void clear() {
-		SSD1306::OledI2C::clear();
+		SSD1306::OledI2C oled{"/dev/i2c-1", 0x3C};
+		oled.clear();
 	}
 	void clear(int start, int end) {
 		// setColor(BLACK);
