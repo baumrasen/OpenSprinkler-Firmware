@@ -7,6 +7,8 @@
 #include "Adafruit_GFX.h"
 #include "ArduiPi_OLED.h"
 
+#include <getopt.h>
+
 #include "font.h"
 #include "images.h"
 
@@ -131,7 +133,7 @@ public:
 
 		// drawString(cx, cy, String(s));
 		display.setCursor(cx, cy);
-		display.print(String(s));
+		display.print(s);
 
 
 		cx += fontWidth*nc;
