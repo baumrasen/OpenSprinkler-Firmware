@@ -16,11 +16,11 @@
 #define LCD_I2C 1
 
 // Instantiate the display
-ArduiPi_OLED display;
+ArduiPi_OLED arduoled;
 
 
 // Config Option
-struct s_opts
+//struct s_opts
 {
 	int oled;
 	int verbose;
@@ -29,10 +29,10 @@ struct s_opts
 // int sleep_divisor = 1 ;
 	
 // default options values
-s_opts opts = {
-	OLED_SH1106_I2C_128x64,	// Default oled
-  false										// Not verbose
-};
+//s_opts opts = {
+//	OLED_SH1106_I2C_128x64,	// Default oled
+//  false						// Not verbose
+//};
 
 #define NUMFLAKES 10
 #define XPOS 0
@@ -46,29 +46,40 @@ class libSSD1306Display {
 public:
 	libSSD1306Display() {}
 	void init() {
-		// do nothing
-		// SSD1306::OledI2C oled{"/dev/i2c-1", 0x3C};
-		// SPI
-		if (display.oled_is_spi_proto(opts.oled))
-		{
-			// SPI change parameters to fit to your LCD
-			if ( !display.init(OLED_SPI_DC,OLED_SPI_RESET,OLED_SPI_CS, opts.oled) )
-				exit(EXIT_FAILURE);
-		}
-		else
-		{
-			// I2C change parameters to fit to your LCD
-			if ( !display.init(OLED_I2C_RESET,opts.oled) )
-				exit(EXIT_FAILURE);
-		}
+		// // do nothing
+		// // SSD1306::OledI2C oled{"/dev/i2c-1", 0x3C};
+		// // SPI
+		// if (arduoled.oled_is_spi_proto(opts.oled))
+		// {
+		// 	// SPI change parameters to fit to your LCD
+		// 	if ( !arduoled.init(OLED_SPI_DC,OLED_SPI_RESET,OLED_SPI_CS, opts.oled) )
+		// 		exit(EXIT_FAILURE);
+		// }
+		// else
+		// {
+		// 	// I2C change parameters to fit to your LCD
+		// 	if ( !arduoled.init(OLED_I2C_RESET,opts.oled) )
+		// 		exit(EXIT_FAILURE);
+		// }
+
+		// I2C change parameters to fit to your LCD
+
+		s_opts opts = {
+			OLED_SH1106_I2C_128x64,	// Default oled
+		 	false					// Not verbose
+		};
+
+		if ( !arduoled.init(OLED_I2C_RESET,opts.oled) )
+			exit(EXIT_FAILURE);
+
 	}
 	void begin() {
 
-		display.begin();
+		arduoled.begin();
 	
 		// init done
-		display.clearDisplay();   // clears the screen  buffer
-		display.display();   		// display it (clear display)
+		arduoled.clearDisplay();   // clears the screen  buffer
+		arduoled.display();   		// display it (clear display)
 		
 		// Wire.setClock(400000L); // lower clock to 400kHz
 		//flipScreenVertically();
@@ -79,7 +90,7 @@ public:
 	void clear() {
 		// SSD1306::OledI2C oled{"/dev/i2c-1", 0x3C};
 		// oled.clear();
-		display.clearDisplay();
+		arduoled.clearDisplay();
 	}
 	void clear(int start, int end) {
 		// setColor(BLACK);
@@ -118,7 +129,7 @@ public:
 		}
 		cx += fontWidth;
 		// display();	// todo: not very efficient
-		display.display();
+		arduoled.display();
 		return 1;
 	}
 	size_t write(const char* s) {
@@ -132,14 +143,14 @@ public:
 		// SSD1306::OledI2C oled{"/dev/i2c-1", 0x3C};
 
 		// drawString(cx, cy, String(s));
-		display.setCursor(cx, cy);
-		display.print(s);
+		arduoled.setCursor(cx, cy);
+		arduoled.print(s);
 
 
 		cx += fontWidth*nc;
 		// display();	// todo: not very efficient
 		// SSD1306::OledI2C::displayUpdate();
-		display.display();
+		arduoled.display();
 		return nc;
 	}
 	void createChar(byte idx, PGM_P ptr) {
