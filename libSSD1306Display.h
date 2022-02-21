@@ -29,10 +29,10 @@ ArduiPi_OLED arduoled;
 // int sleep_divisor = 1 ;
 	
 // default options values
-//s_opts opts = {
-//	OLED_SH1106_I2C_128x64,	// Default oled
-//  false						// Not verbose
-//};
+s_opts oledOpts = {
+	OLED_SH1106_I2C_128x64,	// Default oled
+  false						// Not verbose
+};
 
 #define NUMFLAKES 10
 #define XPOS 0
@@ -148,24 +148,6 @@ public:
 
 
 		cx += fontWidth*nc;
-		// display();	// todo: not very efficient
+		// oled();	// todo: not very efficient
 		// SSD1306::OledI2C::displayUpdate();
 		arduoled.display();
-		return nc;
-	}
-	void createChar(byte idx, PGM_P ptr) {
-		if(idx>=0&&idx<NUM_CUSTOM_ICONS) custom_chars[idx]=ptr;
-	}
-private:
-	uint8_t cx, cy;
-	uint8_t fontWidth, fontHeight;
-	PGM_P custom_chars[NUM_CUSTOM_ICONS];
-	// SSD1306::OledI2C oled;
-};
-
-#endif // not ARDUINO or not ESP8266
-
-#endif // LIBSSD1306DISPLAY_H
-
-
-
