@@ -20,7 +20,7 @@ ArduiPi_OLED arduoled;
 
 
 // Config Option
-//struct s_opts
+struct s_opts
 {
 	int oled;
 	int verbose;
@@ -29,10 +29,10 @@ ArduiPi_OLED arduoled;
 // int sleep_divisor = 1 ;
 	
 // default options values
-s_opts oledOpts = {
-	OLED_SH1106_I2C_128x64,	// Default oled
-  false						// Not verbose
-};
+//s_opts oledOpts = {
+//	OLED_SH1106_I2C_128x64,	// Default oled
+//  false						// Not verbose
+//};
 
 #define NUMFLAKES 10
 #define XPOS 0
