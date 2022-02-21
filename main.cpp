@@ -92,7 +92,7 @@ void flow_poll() {
 		return;
 	}
 	prev_flow_state = curr_flow_state;
-	ulong curr = millis();
+	ulong curr = osmillis();
 	flow_count++;
 
 	/* RAH implementation of flow sensor */
@@ -120,13 +120,13 @@ bool ui_confirm(PGM_P str) {
 	os.lcd_print_line_clear_pgm(str, 0);
 	os.lcd_print_line_clear_pgm(PSTR("(B1:No, B3:Yes)"), 1);
 	byte button;
-	ulong start = millis();
+	ulong start = osmillis();
 	do {
 		button = os.button_read(BUTTON_WAIT_NONE);
 		if((button&BUTTON_MASK)==BUTTON_3 && (button&BUTTON_FLAG_DOWN)) return true;
 		if((button&BUTTON_MASK)==BUTTON_1 && (button&BUTTON_FLAG_DOWN)) return false;
 		delay(10);
-	} while(millis() - start < 2500);
+	} while(osmillis() - start < 2500);
 	return false;
 }
 
@@ -135,16 +135,16 @@ void ui_state_machine() {
 	// to avoid ui_state_machine taking too much computation time
 	// we run it only every UI_STATE_MACHINE_INTERVAL ms
 	static uint32_t last_usm = 0;
-	if(millis() - last_usm <= UI_STATE_MACHINE_INTERVAL) { return; }
-	last_usm = millis();
+	if(osmillis() - last_usm <= UI_STATE_MACHINE_INTERVAL) { return; }
+	last_usm = osmillis();
 
 #if defined(ESP8266)
 	// process screen led
 	static ulong led_toggle_timeout = 0;
 	if(led_blink_ms) {
-		if(millis()>led_toggle_timeout) {
+		if(osmillis()>led_toggle_timeout) {
 			os.toggle_screen_led();
-			led_toggle_timeout = millis() + led_blink_ms;
+			led_toggle_timeout = osmillis() + led_blink_ms;
 		}
 	}
 #endif	
@@ -359,7 +359,7 @@ ISR(WDT_vect)
 #else
 
 void do_setup() {
-	initialiseEpoch();	 // initialize time reference for millis() and micros()
+	initialiseEpoch();	 // initialize time reference for osmillis() and micros()
 	os.begin();					 // OpenSprinkler init
 	os.options_setup();  // Setup options
 
@@ -403,7 +403,7 @@ void do_loop()
 	// handle flow sensor using polling every 1ms (maximum freq 1/(2*1ms)=500Hz)
 	static ulong flowpoll_timeout=0;
 	if(os.iopts[IOPT_SENSOR1_TYPE]==SENSOR_TYPE_FLOW) {
-		ulong curr = millis();
+		ulong curr = osmillis();
 		if(curr!=flowpoll_timeout) {
 			flowpoll_timeout = curr;
 			flow_poll();
@@ -507,7 +507,7 @@ void do_loop()
 				start_network_sta(os.wifi_ssid.c_str(), os.wifi_pass.c_str());
 				os.config_ip();
 				os.state = OS_STATE_CONNECTING;
-				connecting_timeout = millis() + 120000L;
+				connecting_timeout = osmillis() + 120000L;
 				os.lcd.setCursor(0, -1);
 				os.lcd.print(F("Connecting to..."));			
 				os.lcd.setCursor(0, 2);
@@ -532,7 +532,7 @@ void do_loop()
 				os.state = OS_STATE_CONNECTED;
 				connecting_timeout = 0;
 			} else {
-				if(millis()>connecting_timeout) {
+				if(osmillis()>connecting_timeout) {
 					os.state = OS_STATE_INITIAL;
 					WiFi.disconnect(true);
 					DEBUG_PRINTLN(F("timeout"));
@@ -1002,9 +1002,9 @@ void do_loop()
 
 		// perform ntp sync
 		// instead of using curr_time, which may change due to NTP sync itself
-		// we use Arduino's millis() method
+		// we use Arduino's osmillis() method
 		if (curr_time % NTP_SYNC_INTERVAL == 0) os.status.req_ntpsync = 1;
-		//if((millis()/1000) % NTP_SYNC_INTERVAL==15) os.status.req_ntpsync = 1;
+		//if((osmillis()/1000) % NTP_SYNC_INTERVAL==15) os.status.req_ntpsync = 1;
 		perform_ntp_sync();
 
 		// check network connection
@@ -1739,7 +1739,7 @@ void check_network() {
 		boolean failed = false;
 		// todo: ping gateway ip
 		/*ether.clientIcmpRequest(ether.gwip);
-		ulong start = millis();
+		ulong start = osmillis();
 		// wait at most PING_TIMEOUT milliseconds for ping result
 		do {
 			ether.packetLoop(ether.packetReceive());
@@ -1747,7 +1747,7 @@ void check_network() {
 				failed = false;
 				break;
 			}
-		} while(millis() - start < PING_TIMEOUT);*/
+		} while(osmillis() - start < PING_TIMEOUT);*/
 		if (failed)  {
 			if(os.status.network_fails<3)  os.status.network_fails++;
 			// clamp it to 6

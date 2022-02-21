@@ -249,8 +249,8 @@ time_t sysUnsyncedTime = 0; // the time sysTime unadjusted by sync
 
 time_t now() {
 	// calculate number of seconds passed since last call to now()
-	while (millis() - prevMillis >= 1000) {
-		// millis() and prevMillis are both unsigned ints thus the subtraction will always be the absolute value of the difference
+	while (osmillis() - prevMillis >= 1000) {
+		// osmillis() and prevMillis are both unsigned ints thus the subtraction will always be the absolute value of the difference
 		sysTime++;
 		prevMillis += 1000;	
 #ifdef TIME_DRIFT_INFO
@@ -280,7 +280,7 @@ void setTime(time_t t) {
 	sysTime = (uint32_t)t;	
 	nextSyncTime = (uint32_t)t + syncInterval;
 	Status = timeSet;
-	prevMillis = millis();	// restart counting from now (thanks to Korman for this fix)
+	prevMillis = osmillis();	// restart counting from now (thanks to Korman for this fix)
 } 
 
 void setTime(int hr,int min,int sec,int dy, int mnth, int yr){

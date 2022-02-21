@@ -63,7 +63,7 @@ void peel_http_header(char*);
 	void delay(ulong ms);
 	void delayMicroseconds(ulong us);
 	void delayMicrosecondsHard(ulong us);
-	ulong millis();
+	ulong osmillis();
 	ulong micros();
 	void initialiseEpoch();
 	#if defined(OSPI)

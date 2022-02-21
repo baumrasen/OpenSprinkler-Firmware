@@ -120,7 +120,7 @@ void initialiseEpoch()
 	epochMicro = (uint64_t)tv.tv_sec * (uint64_t)1000000 + (uint64_t)(tv.tv_usec) ;
 }
 
-ulong millis (void)
+ulong osmillis (void)
 {
 	struct timeval tv ;
 	uint64_t now ;

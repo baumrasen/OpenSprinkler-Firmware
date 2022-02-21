@@ -57,7 +57,7 @@
 	#define DEBUG_LOGF(msg, ...)			{DEBUG_TIMESTAMP(); DEBUG_PRINTF(msg, ##__VA_ARGS__);}
 
 	static unsigned long _lastMillis = 0;	// Holds the timestamp associated with the last call to DEBUG_DURATION() 
-	inline unsigned long DEBUG_DURATION()	{unsigned long dur = millis() - _lastMillis; _lastMillis = millis(); return dur;}
+	inline unsigned long DEBUG_DURATION()	{unsigned long dur = osmillis() - _lastMillis; _lastMillis = osmillis(); return dur;}
 #else
 	#define DEBUG_PRINTF(msg, ...)			{}
 	#define DEBUG_LOGF(msg, ...)			{}
@@ -184,10 +184,10 @@ void OSMqtt::loop(void) {
 	if (mqtt_client == NULL || !_enabled || os.status.network_fails > 0) return;
 
 	// Only attemp to reconnect every MQTT_RECONNECT_DELAY seconds to avoid blocking the main loop
-	if (!_connected() && (millis() - last_reconnect_attempt >= MQTT_RECONNECT_DELAY * 1000UL)) {
+	if (!_connected() && (osmillis() - last_reconnect_attempt >= MQTT_RECONNECT_DELAY * 1000UL)) {
 		DEBUG_LOGF("MQTT Loop: Reconnecting\r\n");
 		_connect();
-		last_reconnect_attempt = millis();
+		last_reconnect_attempt = osmillis();
 	}
 
 	int state = _loop();

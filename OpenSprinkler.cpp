@@ -1739,7 +1739,7 @@ int8_t OpenSprinkler::send_http_request(const char* server, uint16_t port, char*
 		client->write((uint8_t *)p, len);
 	}
 	memset(ether_buffer, 0, ETHER_BUFFER_SIZE);
-	uint32_t stoptime = millis()+timeout;
+	uint32_t stoptime = osmillis()+timeout;
 
 #if defined(ARDUINO)
 	while(client->connected()) {
@@ -1748,7 +1748,7 @@ int8_t OpenSprinkler::send_http_request(const char* server, uint16_t port, char*
 			if(nbytes>ETHER_BUFFER_SIZE) nbytes=ETHER_BUFFER_SIZE;
 			client->read((uint8_t*)ether_buffer, nbytes);
 		}
-		if(millis()>stoptime) {
+		if(osmillis()>stoptime) {
 			client->stop();
 			return HTTP_RQT_TIMEOUT;			
 		}
@@ -1757,7 +1757,7 @@ int8_t OpenSprinkler::send_http_request(const char* server, uint16_t port, char*
 	while(client->connected()) {
 		int len=client->read((uint8_t *)ether_buffer, ETHER_BUFFER_SIZE);
 		if (len<=0) continue;
-		if(millis()>stoptime) {
+		if(osmillis()>stoptime) {
 			client->stop();
 			return HTTP_RQT_TIMEOUT;
 		}
