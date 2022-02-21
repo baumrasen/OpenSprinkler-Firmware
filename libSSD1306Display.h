@@ -15,7 +15,7 @@
 
 class libSSD1306Display {
 public:
-	libSSD1306Display() {}
+	// libSSD1306Display() {}
 	void init() {
 		// do nothing
 		SSD1306::OledI2C oled{"/dev/i2c-1", 0x3C};
