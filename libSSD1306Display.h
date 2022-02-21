@@ -13,9 +13,9 @@
 #define LCD_STD 0			// Standard LCD
 #define LCD_I2C 1
 
-class libSSD1306Display {
+class libSSD1306Display : public SSD1306::OledI2C {
 public:
-	libSSD1306Display() {}
+	libSSD1306Display(const std::string& device, uint8_t address) : SSD1306::OledI2C(device, address) {}
 	void init() {
 		// do nothing
 		SSD1306::OledI2C oled{"/dev/i2c-1", 0x3C};
