@@ -15,8 +15,8 @@
 #define LCD_STD 0			// Standard LCD
 #define LCD_I2C 1
 
-// Instantiate the display
-ArduiPi_OLED display;
+// Instantiate the oled
+ArduiPi_OLED oled;
 
 
 // Config Option
@@ -49,26 +49,26 @@ public:
 		// do nothing
 		// SSD1306::OledI2C oled{"/dev/i2c-1", 0x3C};
 		// SPI
-		if (display.oled_is_spi_proto(oledOpts.oled))
+		if (oled.oled_is_spi_proto(oledOpts.oled))
 		{
 			// SPI change parameters to fit to your LCD
-			if ( !display.init(OLED_SPI_DC,OLED_SPI_RESET,OLED_SPI_CS, oledOpts.oled) )
+			if ( !oled.init(OLED_SPI_DC,OLED_SPI_RESET,OLED_SPI_CS, oledOpts.oled) )
 				exit(EXIT_FAILURE);
 		}
 		else
 		{
 			// I2C change parameters to fit to your LCD
-			if ( !display.init(OLED_I2C_RESET,oledOpts.oled) )
+			if ( !oled.init(OLED_I2C_RESET,oledOpts.oled) )
 				exit(EXIT_FAILURE);
 		}
 	}
 	void begin() {
 
-		display.begin();
+		oled.begin();
 	
 		// init done
-		display.clearDisplay();   // clears the screen  buffer
-		display.display();   		// display it (clear display)
+		oled.clearDisplay();   // clears the screen  buffer
+		oled.oled();   		// oled it (clear oled)
 		
 		// Wire.setClock(400000L); // lower clock to 400kHz
 		//flipScreenVertically();
@@ -79,7 +79,7 @@ public:
 	void clear() {
 		// SSD1306::OledI2C oled{"/dev/i2c-1", 0x3C};
 		// oled.clear();
-		display.clearDisplay();
+		oled.clearDisplay();
 	}
 	void clear(int start, int end) {
 		// setColor(BLACK);
@@ -117,8 +117,8 @@ public:
 			// 			oled);
 		}
 		cx += fontWidth;
-		// display();	// todo: not very efficient
-		display.display();
+		// oled();	// todo: not very efficient
+		oled.oled();
 		return 1;
 	}
 	size_t write(const char* s) {
@@ -132,14 +132,14 @@ public:
 		// SSD1306::OledI2C oled{"/dev/i2c-1", 0x3C};
 
 		// drawString(cx, cy, String(s));
-		display.setCursor(cx, cy);
-		display.print(s);
+		oled.setCursor(cx, cy);
+		oled.print(s);
 
 
 		cx += fontWidth*nc;
-		// display();	// todo: not very efficient
+		// oled();	// todo: not very efficient
 		// SSD1306::OledI2C::displayUpdate();
-		display.display();
+		oled.oled();
 		return nc;
 	}
 	void createChar(byte idx, PGM_P ptr) {
