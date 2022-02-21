@@ -68,7 +68,7 @@ public:
 	
 		// init done
 		oled.clearDisplay();   // clears the screen  buffer
-		oled.oled();   		// oled it (clear oled)
+		oled.display();   		// oled it (clear oled)
 		
 		// Wire.setClock(400000L); // lower clock to 400kHz
 		//flipScreenVertically();
@@ -118,7 +118,7 @@ public:
 		}
 		cx += fontWidth;
 		// oled();	// todo: not very efficient
-		oled.oled();
+		oled.display();
 		return 1;
 	}
 	size_t write(const char* s) {
@@ -139,7 +139,7 @@ public:
 		cx += fontWidth*nc;
 		// oled();	// todo: not very efficient
 		// SSD1306::OledI2C::displayUpdate();
-		oled.oled();
+		oled.display();
 		return nc;
 	}
 	void createChar(byte idx, PGM_P ptr) {
