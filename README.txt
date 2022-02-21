@@ -13,6 +13,7 @@ https://openthings.freshdesk.com/support/solutions/articles/5000631599-installin
 with OLED-display
 https://github.com/AndrewFromMelbourne/libSSD1306.git
 checkout beside opensprinkler folder
+Install liibSSD1306.a from lib folder after make to /usr/local/lib
 
 ============================================
 Questions and comments:
