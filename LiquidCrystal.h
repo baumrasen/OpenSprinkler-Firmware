@@ -108,9 +108,9 @@ private:
 	uint8_t _backlightval;
 
 	uint8_t _type;		// LCD type. 0: standard; 1: I2C
-	uint8_t _rs_pin; // LOW: command.  HIGH: character.
-	uint8_t _rw_pin; // LOW: write to LCD.	HIGH: read from LCD.
-	uint8_t _enable_pin; // activated by a HIGH pulse.
+	uint8_t _rs_pin; // GPIOLOW: command.  GPIOHIGH: character.
+	uint8_t _rw_pin; // GPIOLOW: write to LCD.	GPIOHIGH: read from LCD.
+	uint8_t _enable_pin; // activated by a GPIOHIGH pulse.
 	uint8_t _data_pins[8];
 
 	uint8_t _displayfunction;

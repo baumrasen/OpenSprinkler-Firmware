@@ -120,9 +120,9 @@ struct ConStatus {
 	byte enabled:1;						// operation enable (when set, controller operation is enabled)
 	byte rain_delayed:1;			// rain delay bit (when set, rain delay is applied)
 	byte sensor1:1;						// sensor1 status bit (when set, sensor1 on is detected)
-	byte program_busy:1;			// HIGH means a program is being executed currently
-	byte has_curr_sense:1;		// HIGH means the controller has a current sensing pin
-	byte safe_reboot:1;				// HIGH means a safe reboot has been marked
+	byte program_busy:1;			// GPIOHIGH means a program is being executed currently
+	byte has_curr_sense:1;		// GPIOHIGH means the controller has a current sensing pin
+	byte safe_reboot:1;				// GPIOHIGH means a safe reboot has been marked
 	byte req_ntpsync:1;				// request ntpsync
 	byte req_network:1;				// request check network
 	byte display_board:5;			// the board that is being displayed onto the lcd

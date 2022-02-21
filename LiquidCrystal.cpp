@@ -85,10 +85,10 @@ void LiquidCrystal::begin() {
 		// before sending commands. Arduino can turn on way befer 4.5V so we'll wait 50
 		delayMicroseconds(50000); 
 		// Now we pull both RS and R/W low to begin commands
-		digitalWrite(_rs_pin, LOW);
-		digitalWrite(_enable_pin, LOW);
+		digitalWrite(_rs_pin, GPIOLOW);
+		digitalWrite(_enable_pin, GPIOLOW);
 		if (_rw_pin != 255) { 
-			digitalWrite(_rw_pin, LOW);
+			digitalWrite(_rw_pin, GPIOLOW);
 		}
 		
 		//put the LCD into 4 bit or 8 bit mode
@@ -334,7 +334,7 @@ void LiquidCrystal::send(uint8_t value, uint8_t mode) {
 
 		// if there is a RW pin indicated, set it low to Write
 		if (_rw_pin != 255) { 
-			digitalWrite(_rw_pin, LOW);
+			digitalWrite(_rw_pin, GPIOLOW);
 		}
 		
 		write4bits(value>>4);
@@ -372,11 +372,11 @@ void LiquidCrystal::pulseEnable(uint8_t _data){
 }
 
 void LiquidCrystal::pulseEnable(void) {
-	digitalWrite(_enable_pin, LOW);
+	digitalWrite(_enable_pin, GPIOLOW);
 	delayMicroseconds(1);		 
-	digitalWrite(_enable_pin, HIGH);
+	digitalWrite(_enable_pin, GPIOHIGH);
 	delayMicroseconds(1);		 // enable pulse must be >450ns
-	digitalWrite(_enable_pin, LOW);
+	digitalWrite(_enable_pin, GPIOLOW);
 	delayMicroseconds(100);		// commands need > 37us to settle
 }
 

@@ -171,7 +171,7 @@ void digitalWriteExt(byte pin, byte value) {
 }
 
 byte digitalReadExt(byte pin) {
-	if(pin==255) return HIGH;
+	if(pin==255) return GPIOHIGH;
 	if(pin>=IOEXP_PIN) {
 		return os.mainio->digitalRead(pin-IOEXP_PIN);
 		// a pin on IO expander
@@ -339,7 +339,7 @@ byte digitalRead(int pin) {
 void gpio_write(int fd, byte value) {
 	static const char value_str[] = "01";
 
-	if (1 != write(fd, &value_str[LOW==value?0:1], 1)) {
+	if (1 != write(fd, &value_str[GPIOLOW==value?0:1], 1)) {
 		DEBUG_PRINT("failed to write value on pin ");
 	}
 }

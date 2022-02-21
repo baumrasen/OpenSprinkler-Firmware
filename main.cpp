@@ -77,7 +77,7 @@ ProgramData pd;		// ProgramdData object
  * flow_last_gpm - last flow rate measured (averaged over flow_gallons) from last valve stopped (used to write to log file). */
 ulong flow_begin, flow_start, flow_stop, flow_gallons;
 ulong flow_count = 0;
-byte prev_flow_state = HIGH;
+byte prev_flow_state = GPIOHIGH;
 float flow_last_gpm=0;
 
 uint32_t reboot_timer = 0;
@@ -87,7 +87,7 @@ void flow_poll() {
 	if(os.hw_rev == 2) pinModeExt(PIN_SENSOR1, INPUT_PULLUP); // this seems necessary for OS 3.2 
 	#endif
 	byte curr_flow_state = digitalReadExt(PIN_SENSOR1);
-	if(!(prev_flow_state==HIGH && curr_flow_state==LOW)) {	// only record on falling edge
+	if(!(prev_flow_state==GPIOHIGH && curr_flow_state==GPIOLOW)) {	// only record on falling edge
 		prev_flow_state = curr_flow_state;
 		return;
 	}
@@ -525,7 +525,7 @@ void do_loop()
 		case OS_STATE_CONNECTING:
 			if(WiFi.status() == WL_CONNECTED) {
 				led_blink_ms = 0;
-				os.set_screen_led(LOW);
+				os.set_screen_led(GPIOLOW);
 				os.lcd.clear();
 				os.save_wifi_ip();
 				start_server_client();

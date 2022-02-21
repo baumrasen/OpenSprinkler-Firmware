@@ -724,9 +724,9 @@ void OpenSprinkler::begin() {
 		digitalWriteExt(V0_PIN_PWR_TX, 1); // turn on TX power
 		digitalWriteExt(V0_PIN_PWR_RX, 1); // turn on RX power
 		pinModeExt(PIN_BUTTON_2, INPUT_PULLUP);
-		digitalWriteExt(PIN_BOOST, LOW);
-		digitalWriteExt(PIN_BOOST_EN, LOW);
-		digitalWriteExt(PIN_LATCH_COM, LOW);
+		digitalWriteExt(PIN_BOOST, GPIOLOW);
+		digitalWriteExt(PIN_BOOST_EN, GPIOLOW);
+		digitalWriteExt(PIN_LATCH_COM, GPIOLOW);
 		
 	} else {
 
@@ -740,7 +740,7 @@ void OpenSprinkler::begin() {
 		mainio = drio;
 
 		pinMode(16, INPUT);
-		if(digitalRead(16)==LOW) {
+		if(digitalRead(16)==GPIOLOW) {
 			// revision 1
 			hw_rev = 1;
 			mainio->i2c_write(NXP_CONFIG_REG, V1_IO_CONFIG);
@@ -786,9 +786,9 @@ void OpenSprinkler::begin() {
 	// shift register setup
 	pinMode(PIN_SR_OE, OUTPUT);
 	// pull shift register OE high to disable output
-	digitalWrite(PIN_SR_OE, HIGH);
+	digitalWrite(PIN_SR_OE, GPIOHIGH);
 	pinMode(PIN_SR_LATCH, OUTPUT);
-	digitalWrite(PIN_SR_LATCH, HIGH);
+	digitalWrite(PIN_SR_LATCH, GPIOHIGH);
 
 	pinMode(PIN_SR_CLOCK, OUTPUT);
 
@@ -817,7 +817,7 @@ void OpenSprinkler::begin() {
 	
 #else
 	// pull shift register OE low to enable output
-	digitalWrite(PIN_SR_OE, LOW);
+	digitalWrite(PIN_SR_OE, GPIOLOW);
 	// Rain sensor port set up
 	pinMode(PIN_SENSOR1, INPUT_PULLUP);
 	#if defined(PIN_SENSOR2)
@@ -842,7 +842,7 @@ void OpenSprinkler::begin() {
 
 	// set rf data pin
 	pinModeExt(PIN_RFTX, OUTPUT);
-	digitalWriteExt(PIN_RFTX, LOW);
+	digitalWriteExt(PIN_RFTX, GPIOLOW);
 
 #if defined(ARDUINO)	// AVR SD and LCD functions
 
@@ -870,17 +870,17 @@ void OpenSprinkler::begin() {
 
 		if (hw_type == HW_TYPE_DC) {
 			pinMode(PIN_BOOST, OUTPUT);
-			digitalWrite(PIN_BOOST, LOW);
+			digitalWrite(PIN_BOOST, GPIOLOW);
 
 			pinMode(PIN_BOOST_EN, OUTPUT);
-			digitalWrite(PIN_BOOST_EN, LOW);
+			digitalWrite(PIN_BOOST_EN, GPIOLOW);
 		}
 
 		// detect if current sensing pin is present
 		pinMode(PIN_CURR_DIGITAL, INPUT);
-		digitalWrite(PIN_CURR_DIGITAL, HIGH); // enable internal pullup
+		digitalWrite(PIN_CURR_DIGITAL, GPIOHIGH); // enable internal pullup
 		status.has_curr_sense = digitalRead(PIN_CURR_DIGITAL) ? 0 : 1;
-		digitalWrite(PIN_CURR_DIGITAL, LOW);
+		digitalWrite(PIN_CURR_DIGITAL, GPIOLOW);
 		baseline_current = 0;
 
 	#endif
@@ -916,7 +916,7 @@ void OpenSprinkler::begin() {
 	
 		// set sd cs pin high to release SD
 		pinMode(PIN_SD_CS, OUTPUT);
-		digitalWrite(PIN_SD_CS, HIGH);
+		digitalWrite(PIN_SD_CS, GPIOHIGH);
 
 		if(!sd.begin(PIN_SD_CS, SPI_HALF_SPEED)) {
 			// !!! sd card not detected, stall as we cannot proceed
@@ -946,9 +946,9 @@ void OpenSprinkler::begin() {
  *
  */
 void OpenSprinkler::latch_boost() {
-	digitalWriteExt(PIN_BOOST, HIGH);		 // enable boost converter
+	digitalWriteExt(PIN_BOOST, GPIOHIGH);		 // enable boost converter
 	delay((int)iopts[IOPT_BOOST_TIME]<<2);	// wait for booster to charge
-	digitalWriteExt(PIN_BOOST, LOW);		 // disable boost converter
+	digitalWriteExt(PIN_BOOST, GPIOLOW);		 // disable boost converter
 }
 
 /** Set all zones (for LATCH controller)
@@ -972,8 +972,8 @@ void OpenSprinkler::latch_setallzonepins(byte value) {
 }
 
 void OpenSprinkler::latch_disable_alloutputs_v2() {
-	digitalWriteExt(PIN_LATCH_COMA, LOW);
-	digitalWriteExt(PIN_LATCH_COMK, LOW);
+	digitalWriteExt(PIN_LATCH_COMA, GPIOLOW);
+	digitalWriteExt(PIN_LATCH_COMK, GPIOLOW);
 	
 	// latch v2 has a pca9555 the lowest 8 bits of which control all h-bridge anode pins
 	drio->i2c_write(NXP_OUTPUT_REG, drio->i2c_read(NXP_OUTPUT_REG) & 0xFF00);
@@ -1007,7 +1007,7 @@ void OpenSprinkler::latch_setzonepin(byte sid, byte value) {
 }
 
 void OpenSprinkler::latch_setzoneoutput_v2(byte sid, byte A, byte K) {
-	if(A==HIGH && K==HIGH) return; // A and K must not be HIGH at the same time
+	if(A==GPIOHIGH && K==GPIOHIGH) return; // A and K must not be GPIOHIGH at the same time
 	
 	if(sid<8) { // on main controller
 		// v2 latch driver has one PCA9555, the lowest 8-bits of which control all anode pins
@@ -1032,21 +1032,21 @@ void OpenSprinkler::latch_open(byte sid) {
 		DEBUG_PRINTLN(F("latch_open_v2"));
 		latch_disable_alloutputs_v2(); // disable all output pins
 		latch_boost(); // generate boost voltage
-		digitalWriteExt(PIN_LATCH_COMA, HIGH); // enable COM+
-		latch_setzoneoutput_v2(sid, LOW, HIGH); // enable sid-
-		digitalWriteExt(PIN_BOOST_EN, HIGH); // enable output path
+		digitalWriteExt(PIN_LATCH_COMA, GPIOHIGH); // enable COM+
+		latch_setzoneoutput_v2(sid, GPIOLOW, GPIOHIGH); // enable sid-
+		digitalWriteExt(PIN_BOOST_EN, GPIOHIGH); // enable output path
 		delay(150);
-		digitalWriteExt(PIN_BOOST_EN, LOW); // disabled output boosted voltage path
+		digitalWriteExt(PIN_BOOST_EN, GPIOLOW); // disabled output boosted voltage path
 		latch_disable_alloutputs_v2(); // disable all output pins		
 	} else {
 		latch_boost();	// boost voltage
-		latch_setallzonepins(HIGH);				// set all switches to HIGH, including COM
-		latch_setzonepin(sid, LOW); // set the specified switch to LOW
+		latch_setallzonepins(GPIOHIGH);				// set all switches to GPIOHIGH, including COM
+		latch_setzonepin(sid, GPIOLOW); // set the specified switch to GPIOLOW
 		delay(1); // delay 1 ms for all gates to stablize
-		digitalWriteExt(PIN_BOOST_EN, HIGH); // dump boosted voltage
+		digitalWriteExt(PIN_BOOST_EN, GPIOHIGH); // dump boosted voltage
 		delay(100);											// for 100ms
-		latch_setzonepin(sid, HIGH);				// set the specified switch back to HIGH
-		digitalWriteExt(PIN_BOOST_EN, LOW);  // disable boosted voltage
+		latch_setzonepin(sid, GPIOHIGH);				// set the specified switch back to GPIOHIGH
+		digitalWriteExt(PIN_BOOST_EN, GPIOLOW);  // disable boosted voltage
 	}
 }
 
@@ -1055,22 +1055,22 @@ void OpenSprinkler::latch_close(byte sid) {
 		DEBUG_PRINTLN(F("latch_close_v2"));	
 		latch_disable_alloutputs_v2(); // disable all output pins
 		latch_boost(); // generate boost voltage
-		latch_setzoneoutput_v2(sid, HIGH, LOW); // enable sid+
-		digitalWriteExt(PIN_LATCH_COMK, HIGH); // enable COM-
-		digitalWriteExt(PIN_BOOST_EN, HIGH); // enable output path
+		latch_setzoneoutput_v2(sid, GPIOHIGH, GPIOLOW); // enable sid+
+		digitalWriteExt(PIN_LATCH_COMK, GPIOHIGH); // enable COM-
+		digitalWriteExt(PIN_BOOST_EN, GPIOHIGH); // enable output path
 		delay(150);
-		digitalWriteExt(PIN_BOOST_EN, LOW); // disable output boosted voltage path
+		digitalWriteExt(PIN_BOOST_EN, GPIOLOW); // disable output boosted voltage path
 		latch_disable_alloutputs_v2(); // disable all output pins
 	} else {
 		latch_boost();	// boost voltage
-		latch_setallzonepins(LOW);				// set all switches to LOW, including COM
-		latch_setzonepin(sid, HIGH);// set the specified switch to HIGH
+		latch_setallzonepins(GPIOLOW);				// set all switches to GPIOLOW, including COM
+		latch_setzonepin(sid, GPIOHIGH);// set the specified switch to GPIOHIGH
 		delay(1); // delay 1 ms for all gates to stablize
-		digitalWriteExt(PIN_BOOST_EN, HIGH); // dump boosted voltage
+		digitalWriteExt(PIN_BOOST_EN, GPIOHIGH); // dump boosted voltage
 		delay(100);											// for 100ms
-		latch_setzonepin(sid, LOW);			// set the specified switch back to LOW
-		digitalWriteExt(PIN_BOOST_EN, LOW);  // disable boosted voltage
-		latch_setallzonepins(HIGH);								// set all switches back to HIGH
+		latch_setzonepin(sid, GPIOLOW);			// set the specified switch back to GPIOLOW
+		digitalWriteExt(PIN_BOOST_EN, GPIOLOW);  // disable boosted voltage
+		latch_setallzonepins(GPIOHIGH);								// set all switches back to GPIOHIGH
 	}
 }
 
@@ -1111,11 +1111,11 @@ void OpenSprinkler::apply_all_station_bits() {
 		// Handle DC booster
 		if(hw_type==HW_TYPE_DC && engage_booster) {
 			// for DC controller: boost voltage and enable output path
-			digitalWriteExt(PIN_BOOST_EN, LOW);  // disfable output path
-			digitalWriteExt(PIN_BOOST, HIGH);		 // enable boost converter
+			digitalWriteExt(PIN_BOOST_EN, GPIOLOW);  // disfable output path
+			digitalWriteExt(PIN_BOOST, GPIOHIGH);		 // enable boost converter
 			delay((int)iopts[IOPT_BOOST_TIME]<<2);	// wait for booster to charge
-			digitalWriteExt(PIN_BOOST, LOW);		 // disable boost converter
-			digitalWriteExt(PIN_BOOST_EN, HIGH); // enable output path
+			digitalWriteExt(PIN_BOOST, GPIOLOW);		 // disable boost converter
+			digitalWriteExt(PIN_BOOST_EN, GPIOHIGH); // enable output path
 			engage_booster = 0;
 		}
 
@@ -1144,7 +1144,7 @@ void OpenSprinkler::apply_all_station_bits() {
 		
 	byte bid, s, sbits;  
 #else
-	digitalWrite(PIN_SR_LATCH, LOW);
+	digitalWrite(PIN_SR_LATCH, GPIOLOW);
 	byte bid, s, sbits;
 
 	// Shift out all station bit values
@@ -1156,32 +1156,32 @@ void OpenSprinkler::apply_all_station_bits() {
 			sbits = 0;
 
 		for(s=0;s<8;s++) {
-			digitalWrite(PIN_SR_CLOCK, LOW);
+			digitalWrite(PIN_SR_CLOCK, GPIOLOW);
 	#if defined(OSPI) // if OSPI, use dynamically assigned pin_sr_data
-			digitalWrite(pin_sr_data, (sbits & ((byte)1<<(7-s))) ? HIGH : LOW );
+			digitalWrite(pin_sr_data, (sbits & ((byte)1<<(7-s))) ? GPIOHIGH : GPIOLOW );
 	#else
-			digitalWrite(PIN_SR_DATA, (sbits & ((byte)1<<(7-s))) ? HIGH : LOW );
+			digitalWrite(PIN_SR_DATA, (sbits & ((byte)1<<(7-s))) ? GPIOHIGH : GPIOLOW );
 	#endif
-			digitalWrite(PIN_SR_CLOCK, HIGH);
+			digitalWrite(PIN_SR_CLOCK, GPIOHIGH);
 		}
 	}
 
 	#if defined(ARDUINO)
 	if((hw_type==HW_TYPE_DC) && engage_booster) {
 		// for DC controller: boost voltage
-		digitalWrite(PIN_BOOST_EN, LOW);	// disable output path
-		digitalWrite(PIN_BOOST, HIGH);		// enable boost converter
+		digitalWrite(PIN_BOOST_EN, GPIOLOW);	// disable output path
+		digitalWrite(PIN_BOOST, GPIOHIGH);		// enable boost converter
 		delay((int)iopts[IOPT_BOOST_TIME]<<2);	// wait for booster to charge
-		digitalWrite(PIN_BOOST, LOW);			// disable boost converter
+		digitalWrite(PIN_BOOST, GPIOLOW);			// disable boost converter
 
-		digitalWrite(PIN_BOOST_EN, HIGH); // enable output path
-		digitalWrite(PIN_SR_LATCH, HIGH);
+		digitalWrite(PIN_BOOST_EN, GPIOHIGH); // enable output path
+		digitalWrite(PIN_SR_LATCH, GPIOHIGH);
 		engage_booster = 0;
 	} else {
-		digitalWrite(PIN_SR_LATCH, HIGH);
+		digitalWrite(PIN_SR_LATCH, GPIOHIGH);
 	}
 	#else
-	digitalWrite(PIN_SR_LATCH, HIGH);
+	digitalWrite(PIN_SR_LATCH, GPIOHIGH);
 	#endif
 #endif
 

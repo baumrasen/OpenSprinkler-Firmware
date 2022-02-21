@@ -61,7 +61,7 @@ public:
 	}
 
 	uint8_t digitalRead(uint8_t pin) {
-		return (digitalRead() & (1<<pin)) ? HIGH : LOW;
+		return (digitalRead() & (1<<pin)) ? GPIOHIGH : GPIOLOW;
 	}
 
 	void digitalWrite(uint8_t pin, uint8_t v) {
@@ -134,8 +134,8 @@ byte digitalReadExt(byte pin);
 #define INPUT_PULLUP INPUT
 #endif
 
-#define HIGH	 1
-#define LOW		 0
+#define GPIOHIGH	 1
+#define GPIOLOW		 0
 
 void pinMode(int pin, byte mode);
 void digitalWrite(int pin, byte value);

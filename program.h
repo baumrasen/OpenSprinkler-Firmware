@@ -55,7 +55,7 @@ struct LogStruct {
 /** Program data structure */
 class ProgramStruct {
 public:
-	byte enabled	:1;  // HIGH means the program is enabled
+	byte enabled	:1;  // GPIOHIGH means the program is enabled
 	
 	// weather data
 	byte use_weather: 1;
