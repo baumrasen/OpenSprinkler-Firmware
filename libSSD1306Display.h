@@ -29,7 +29,7 @@ struct s_opts
 // int sleep_divisor = 1 ;
 	
 // default options values
-s_opts opts = {
+s_opts oledOpts = {
 	OLED_SH1106_I2C_128x64,	// Default oled
   false										// Not verbose
 };
@@ -49,16 +49,16 @@ public:
 		// do nothing
 		// SSD1306::OledI2C oled{"/dev/i2c-1", 0x3C};
 		// SPI
-		if (display.oled_is_spi_proto(opts.oled))
+		if (display.oled_is_spi_proto(oledOpts.oled))
 		{
 			// SPI change parameters to fit to your LCD
-			if ( !display.init(OLED_SPI_DC,OLED_SPI_RESET,OLED_SPI_CS, opts.oled) )
+			if ( !display.init(OLED_SPI_DC,OLED_SPI_RESET,OLED_SPI_CS, oledOpts.oled) )
 				exit(EXIT_FAILURE);
 		}
 		else
 		{
 			// I2C change parameters to fit to your LCD
-			if ( !display.init(OLED_I2C_RESET,opts.oled) )
+			if ( !display.init(OLED_I2C_RESET,oledOpts.oled) )
 				exit(EXIT_FAILURE);
 		}
 	}
