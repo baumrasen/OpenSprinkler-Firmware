@@ -26,7 +26,7 @@ struct s_opts
 	int verbose;
 } ;
 
-int sleep_divisor = 1 ;
+// int sleep_divisor = 1 ;
 	
 // default options values
 s_opts opts = {
