@@ -169,6 +169,9 @@ private:
 #define SSD1306_SET_PRECHARGE_PERIOD 0xD9
 #define SSD1306_SET_VCOM_DESELECT 0xDB
 
+ // adjust SH1106_COLUMN_OFFSET if needed.
+ #define SH1106_COLUMN_OFFSET 2 // Try 2 if the display is shifted horizontally
+
 class SSD1306Display {
 public:
   SSD1306Display(uint8_t addr, uint8_t _sda, uint8_t _scl) {
@@ -256,35 +259,31 @@ public:
   void setFont(const uint8_t *f) { font = (uint8_t *)f; }
 
   void display() {
-    i2c.begin_transaction(SSD1306_COMMAND_ADDRESS);
-    ssd1306_command(SSD1306_SET_PAGE_ADDR);
-    ssd1306_command(0x00); // Page start address (0 = reset)
-    switch (height) {
-    case 64:
-      ssd1306_command(7);
-      break;
-    case 32:
-      ssd1306_command(3);
-      break;
-    case 16:
-      ssd1306_command(1);
-      break;
+    uint8_t page_height = height / 8; // Should be 8 for 128x64 display
+    for (uint8_t page = 0; page < page_height; page++) {
+      i2c.begin_transaction(SSD1306_COMMAND_ADDRESS);
+      // Set Page Address (0xB0 to 0xB7)
+      ssd1306_command(0xB0 | page);
+      // Set Lower Column Start Address (0x00 to 0x0F)
+      // Start column address depends on how the 128 pixels are mapped in the 132-pixel RAM
+      ssd1306_command(SH1106_COLUMN_OFFSET & 0x0F);
+      // Set Higher Column Start Address (0x10 to 0x1F)
+      ssd1306_command(0x10 | (SH1106_COLUMN_OFFSET >> 4));
+      i2c.end_transaction();
+
+      // Send 128 bytes of data for this page
+      i2c.begin_transaction(SSD1306_DATA_CONTINUE_ADDRESS);
+      for (uint16_t col = 0; col < width; col++) {
+          // Calculate the index in our linear buffer
+          uint16_t index = col + page * width;
+          if (index < sizeof(frame)) { // Bounds check
+               ssd1306_data(frame[index]);
+          } else {
+               ssd1306_data(0x00); // Should not happen if frame size is correct
+          }
+      }
+      i2c.end_transaction();
     }
-
-    ssd1306_command(SSD1306_SET_COLUMN_ADDR);
-    ssd1306_command(0x00); // Column start address (0 = reset)
-	ssd1306_command(width - 1); // Column end address (127 = reset)
-
-    i2c.end_transaction();
-
-    i2c.begin_transaction(SSD1306_DATA_CONTINUE_ADDRESS);
-
-    int b;
-    for (b = 0; b < 1024; b++) {
-      ssd1306_data(frame[b]);
-    }
-
-    i2c.end_transaction();
   }
 
   void clear() {
