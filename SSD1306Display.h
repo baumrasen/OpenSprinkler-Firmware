@@ -222,13 +222,13 @@ public:
     ssd1306_command(SSD1306_COM_SCAN_DIR_DEC);
 
     #ifdef DISPLAY_ROTATE_180
-        // 180 Grad Drehung: Spalten gespiegelt (A1), Zeilen gespiegelt (C8)
-        ssd1306_command(SSD1306_SET_SEGMENT_REMAP | 0x01); // Horizontal gespiegelt
-        ssd1306_command(SSD1306_COM_SCAN_DIR_DEC);        // Vertikal gespiegelt
-    #else
         // Normale Ausrichtung: Spalten normal (A0), Zeilen normal (C0)
         ssd1306_command(SSD1306_SET_SEGMENT_REMAP | 0x00); // Normal horizontal
         ssd1306_command(SSD1306_COM_SCAN_DIR_INC);        // Normal vertikal
+    #else
+        // 180 Grad Drehung: Spalten gespiegelt (A1), Zeilen gespiegelt (C8)
+        ssd1306_command(SSD1306_SET_SEGMENT_REMAP | 0x01); // Horizontal gespiegelt
+        ssd1306_command(SSD1306_COM_SCAN_DIR_DEC);        // Vertikal gespiegelt
     #endif
 
     switch (height) {
