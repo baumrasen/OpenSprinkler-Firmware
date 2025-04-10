@@ -169,8 +169,10 @@ private:
 #define SSD1306_SET_PRECHARGE_PERIOD 0xD9
 #define SSD1306_SET_VCOM_DESELECT 0xDB
 
- // adjust SH1106_COLUMN_OFFSET if needed.
- #define SH1106_COLUMN_OFFSET 2 // Try 2 if the display is shifted horizontally
+#ifndef SH1106_COLUMN_OFFSET
+  // adjust SH1106_COLUMN_OFFSET if needed.
+  #define SH1106_COLUMN_OFFSET 2 // Try 2 if the display is shifted horizontally
+#endif
 
 class SSD1306Display {
 public:
@@ -253,6 +255,8 @@ public:
     ssd1306_command(SSD1306_SET_PRECHARGE_PERIOD);
     ssd1306_command(0xF1);
 
+    // Set VCOM Deselect Level - 0x40 is a common value,
+    // but 0x30 or 0x35 might be optimal for some SH1106 modules.
     ssd1306_command(SSD1306_SET_VCOM_DESELECT);
     ssd1306_command(0x40);
 
@@ -269,6 +273,22 @@ public:
   void setFont(const uint8_t *f) { font = (uint8_t *)f; }
 
   void display() {
+
+    // Optional: Select Page Addressing Mode if needed (often set during init)
+    // ssd1306_command(SSD1306_MEMORY_ADDR_MODE);
+    // ssd1306_command(0x02); // 0x02 = Page Addressing Mode
+
+    // Determine the correct column start address based on the display type
+    #ifdef USE_SH1106_DISPLAY
+        // SH1106 typically requires an offset (e.g., 2 for 128x64 displays)
+        // because its internal RAM might be wider (e.g., 132 columns).
+        const uint8_t column_start_address = SH1106_COLUMN_OFFSET;
+        // Ensure SH1106_COLUMN_OFFSET is defined above or elsewhere
+    #else
+        // SSD1306 usually starts at column 0.
+        const uint8_t column_start_address = 0;
+    #endif
+
     uint8_t page_height = height / 8; // Should be 8 for 128x64 display
     for (uint8_t page = 0; page < page_height; page++) {
       i2c.begin_transaction(SSD1306_COMMAND_ADDRESS);
@@ -276,9 +296,9 @@ public:
       ssd1306_command(0xB0 | page);
       // Set Lower Column Start Address (0x00 to 0x0F)
       // Start column address depends on how the 128 pixels are mapped in the 132-pixel RAM
-      ssd1306_command(SH1106_COLUMN_OFFSET & 0x0F);
+      ssd1306_command(column_start_address & 0x0F);
       // Set Higher Column Start Address (0x10 to 0x1F)
-      ssd1306_command(0x10 | (SH1106_COLUMN_OFFSET >> 4));
+      ssd1306_command(0x10 | (column_start_address >> 4));
       i2c.end_transaction();
 
       // Send 128 bytes of data for this page
